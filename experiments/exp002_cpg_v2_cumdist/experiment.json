@@ -1,0 +1,51 @@
+{
+  "id": "exp002",
+  "name": "CPG hybrid — fitness v2 (cumulative_distance)",
+  "date": "2026-02-13",
+  "policy": "cpg",
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+
+  "fitness_function": {
+    "version": "v2",
+    "formula": "cumulative_distance*30 + upright*0.3 + velocity*0.5 + time_alive*0.1 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*100",
+    "distance_metric": "integral(max(0, min(x_vel, 10)) * 0.008)",
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.3,
+    "W_VELOCITY": 0.5,
+    "W_TIME_ALIVE": 0.1,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 100.0,
+    "IMPACT_FORCE_LIMIT_N": 500.0
+  },
+
+  "result": {
+    "best_score": 539.6,
+    "best_generation": 460,
+    "predicted_score_good_gait": 1075,
+    "outcome": "improved",
+    "gait_description": "Places front foot forward, brings back foot to same position, repeats. Shuffle-walk pattern. No hopping. Sustained but slow."
+  },
+
+  "diagnosis": {
+    "problem": "Score ~540 vs predicted ~1075 for a 2 m/s gait. Walker moves but very slowly — shuffle pattern with feet never overtaking each other.",
+    "root_cause_candidates": [
+      "CPG oscillator frequency too slow — feet move cautiously rather than striding",
+      "Upright bonus (×0.3) still dominates velocity signal — walker prioritises balance over speed",
+      "Walker never learned to swing the rear leg past the front (no proper stride)",
+      "3 episodes × 1000 steps may not be enough signal for stride length learning"
+    ],
+    "fix_in_next": "See exp003"
+  },
+
+  "artifacts": {
+    "fitness_curve": null,
+    "fitness_curve_note": "Not saved — fitness_curve_cpg.png was overwritten by exp003 before archiving.",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

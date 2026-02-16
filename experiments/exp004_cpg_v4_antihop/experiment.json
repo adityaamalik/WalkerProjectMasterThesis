@@ -1,0 +1,80 @@
+{
+  "id": "exp004",
+  "name": "CPG hybrid — fitness v4 (anti-hop penalties, warm-start from exp003)",
+  "date": "2026-02-15",
+  "policy": "cpg",
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.2,
+  "sigma0_note": "Reduced from 0.5 — warm-starting from exp003 best; refine rather than explore wildly",
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp003_cpg_v3_stride/checkpoints/best_params.npy",
+
+  "changes_from_exp003": [
+    "Added pitch_rate_penalty: sum of |obs[2]| per step × W_PITCH_RATE=0.05",
+    "Added airborne_penalty: count of steps where both foot forces < 20N × W_AIRBORNE=0.5",
+    "FALL_PENALTY: 100 → 200 (falling is now very costly, discourages momentum build-up)",
+    "sigma0: 0.5 → 0.2 (warm-start refinement, not fresh exploration)"
+  ],
+
+  "fitness_function": {
+    "version": "v4",
+    "formula": "cumulative_distance*30 + upright*0.2 + velocity*0.5 + speed_bonus*2.0 + time_alive*0.05 - pitch_rate*0.05 - airborne*0.5 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*200",
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_VELOCITY": 0.5,
+    "W_SPEED_BONUS": 2.0,
+    "MIN_SPEED_MS": 1.0,
+    "W_TIME_ALIVE": 0.05,
+    "W_PITCH_RATE": 0.05,
+    "W_AIRBORNE": 0.5,
+    "FOOT_CONTACT_FLOOR_N": 20.0,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0,
+    "IMPACT_FORCE_LIMIT_N": 500.0,
+    "CORRECTION_SCALE": 0.5
+  },
+
+  "rationale": {
+    "hopping_diagnosis": "exp003 achieved 985.43 with 2 hops then fall. The speed_bonus (any v > 1.0 m/s) was satisfied cheapest by a ballistic hop: both feet push simultaneously, body launches. After 2–3 hops torso pitch momentum exceeds Walker2d health threshold (>1.0 rad).",
+    "pitch_rate_penalty": "obs[2] = torso pitch angular velocity. Hopper: |pitch_rate| ~ 3–8 rad/s at landing. Walker: |pitch_rate| ~ 0.1–0.5 rad/s. Penalising the sum makes hopping costly even mid-flight and landing. At 5 rad/s average over 300 steps, penalty = 300×5×0.05 = 75 pts.",
+    "airborne_penalty": "Both feet off ground simultaneously defines a hop. A walker always has at least one foot in contact (cfrc_ext force > 20N). At 300 airborne steps: 300×0.5 = 150 pts penalty for hopper, 0 for walker.",
+    "combined_effect": "Hopper at exp003 quality would now lose ~150+75+200(fall) = 425 pts vs exp003. A walking gait at 1.5 m/s would gain all speed_bonus with ~0 anti-hop penalties. Net advantage of walking over hopping: ~425 pts."
+  },
+
+  "predicted_score_good_gait": {
+    "at_1_5_ms_walking": 1750,
+    "breakdown": {
+      "cumulative_distance": "1.5*1000*0.008=12m × 30 = 360",
+      "upright_bonus": "900 × 0.2 = 180",
+      "velocity_bonus": "375 × 0.5 = 188",
+      "speed_bonus": "0.5/step × 1000 × 2.0 = 1000",
+      "time_alive": "1000 × 0.05 = 50",
+      "pitch_rate_penalty": "~200 steps × 0.3 rad/s × 0.05 = -3",
+      "airborne_penalty": "~0 (always one foot on ground)",
+      "penalties": "~-25",
+      "total": "~1750"
+    }
+  },
+
+  "result": {
+    "best_score": 2028.1,
+    "best_generation": 308,
+    "outcome": "strong_improvement",
+    "gait_description": "Sustained hopping for a long time — significantly more stable than exp003's 2-hop-then-fall. Anti-hop penalties successfully discouraged the immediate-fall pattern. Score 2028.1 exceeds predicted ~1750, suggesting the walker also learned some speed optimisation."
+  },
+
+  "diagnosis": {
+    "problem": "Still primarily a hopping gait rather than alternating-leg walk. The pitch_rate and airborne penalties discouraged falling but hopping with good pitch control is still a local optimum.",
+    "effect": "Long sustained hops — creature is fast and stable but not walking. Each hop is more controlled. The FALL_PENALTY=200 discourages falling so the creature learned to land stably.",
+    "fix_in_next": "exp005: reward alternating foot contact pattern explicitly. Add foot-contact-alternation bonus that only pays when feet contact the ground in left-right alternation (gait symmetry reward)."
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

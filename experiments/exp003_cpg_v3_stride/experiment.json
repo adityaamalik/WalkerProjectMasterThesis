@@ -1,0 +1,73 @@
+{
+  "id": "exp003",
+  "name": "CPG hybrid — fitness v3 (speed bonus + larger correction scale)",
+  "date": "2026-02-13",
+  "policy": "cpg",
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+
+  "changes_from_exp002": [
+    "Added speed_bonus: max(0, x_vel - 1.0) per step × W_SPEED_BONUS=2.0",
+    "CORRECTION_SCALE: 0.3 → 0.5 (MLP has more authority to push legs)",
+    "W_UPRIGHT: 0.3 → 0.2 (slightly reduced to not dominate over speed)",
+    "W_TIME_ALIVE: 0.1 → 0.05 (reduced — survival should follow from walking, not padding)"
+  ],
+
+  "fitness_function": {
+    "version": "v3",
+    "formula": "cumulative_distance*30 + upright*0.2 + velocity*0.5 + speed_bonus*2.0 + time_alive*0.05 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*100",
+    "distance_metric": "integral(max(0, min(x_vel, 10)) * 0.008)",
+    "MIN_SPEED_MS": 1.0,
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_VELOCITY": 0.5,
+    "W_SPEED_BONUS": 2.0,
+    "W_TIME_ALIVE": 0.05,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 100.0,
+    "IMPACT_FORCE_LIMIT_N": 500.0,
+    "CORRECTION_SCALE": 0.5
+  },
+
+  "rationale": {
+    "shuffle_problem": "exp002 learned to shuffle at ~0.3-0.5 m/s. Cumulative distance grows slowly; speed_bonus=0 all episode.",
+    "fix": "speed_bonus only activates above 1.0 m/s, so the optimiser must commit to real strides to collect it. At 1.5 m/s striding, speed_bonus adds 0.5/step × 2.0 × 1000 steps = 1000 points — larger than any other term. This makes striding strictly better than shuffling.",
+    "correction_scale": "At 0.3, the feedback MLP can only add ±0.3 torque on top of the CPG. The CPG alone may not produce enough leg lift for a real stride. At 0.5, the MLP has authority to override the CPG pattern and push legs through a fuller swing."
+  },
+
+  "predicted_score_good_gait": {
+    "at_1_5_ms": 1350,
+    "breakdown": {
+      "cumulative_distance": "1.5*1000*0.008=12m × 30 = 360",
+      "upright_bonus": "900 × 0.2 = 180",
+      "velocity_bonus": "450 × 0.5 = 225",
+      "speed_bonus": "0.5 m/s excess × 1000 steps × 2.0 = 1000",
+      "time_alive": "1000 × 0.05 = 50",
+      "penalties": "~-25",
+      "total": "~1790"
+    }
+  },
+
+  "result": {
+    "best_score": 985.43,
+    "best_generation": 490,
+    "outcome": "improved_but_unstable",
+    "gait_description": "2 successful hops forward, falls on 3rd hop. Speed bonus successfully broke the shuffle local minimum. However, the optimiser discovered hopping (high amplitude, low frequency) rather than walking. Body accumulates rotational momentum over 2-3 hops until torso pitch exceeds health termination threshold (>1.0 rad)."
+  },
+
+  "diagnosis": {
+    "problem": "Speed bonus rewarded any motion above 1.0 m/s. Fastest way to achieve this with a CPG: high-amplitude ballistic hop. Walker converged to hopping not walking.",
+    "effect": "After 2 hops, torso angular momentum accumulates and pitch angle exceeds termination threshold. Fall_penalty fires.",
+    "fix_in_next": "exp004: penalise torso pitch rate (obs[2]) to discourage rotational build-up; penalise simultaneous airborne (both feet off ground); warm-start from exp003 best_params with tighter sigma=0.2"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "exp001",
+  "name": "CPG hybrid — fitness v1 (max_distance)",
+  "date": "2026-02-13",
+  "policy": "cpg",
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+
+  "fitness_function": {
+    "version": "v1",
+    "formula": "max_distance*100 + upright*0.1 + velocity*0.05 + time_alive*0.01 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*100",
+    "distance_metric": "max_x_position",
+    "W_DISTANCE": 100.0,
+    "W_UPRIGHT": 0.1,
+    "W_VELOCITY": 0.05,
+    "W_TIME_ALIVE": 0.01,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 100.0,
+    "IMPACT_FORCE_LIMIT_N": 500.0
+  },
+
+  "result": {
+    "best_score": 307.97,
+    "best_generation": 449,
+    "outcome": "partial",
+    "gait_description": "Hops when it falls, takes one step forward, then stops. No sustained locomotion."
+  },
+
+  "diagnosis": {
+    "problem": "max_distance plateaus after first lunge — fitness stops increasing once peak x is reached",
+    "effect": "No incentive to keep moving after the initial hop. time_alive+velocity terms too small (~20 total) vs distance term (~300) to drive continued motion.",
+    "fix_in_next": "Replace max_distance with cumulative_distance (integral of forward velocity × dt)"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": null,
+    "note": "best_params.npy was overwritten by exp002 run. Fitness curve preserved."
+  }
+}

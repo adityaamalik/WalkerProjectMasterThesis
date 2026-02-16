@@ -1,0 +1,77 @@
+{
+  "id": "exp005",
+  "name": "CPG hybrid — fitness v5 (gait alternation reward, warm-start from exp004)",
+  "date": "2026-02-15",
+  "policy": "cpg",
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.2,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp004_cpg_v4_antihop/checkpoints/best_params.npy",
+
+  "changes_from_exp004": [
+    "Added alternation_bonus: +1.0 each time active foot contact switches from one foot to the other (left->right or right->left), weighted W_ALTERNATION=1.5",
+    "Increased W_AIRBORNE: 0.5 -> 1.0 (stronger penalty for simultaneous airborne)",
+    "Removed W_VELOCITY (absorbed into speed_bonus — redundant signal)"
+  ],
+
+  "fitness_function": {
+    "version": "v5",
+    "formula": "cumulative_distance*30 + upright*0.2 + speed_bonus*2.0 + alternation_bonus*1.5 + time_alive*0.05 - pitch_rate*0.05 - airborne*1.0 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*200",
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_VELOCITY": 0.0,
+    "W_SPEED_BONUS": 2.0,
+    "MIN_SPEED_MS": 1.0,
+    "W_ALTERNATION": 1.5,
+    "W_TIME_ALIVE": 0.05,
+    "W_PITCH_RATE": 0.05,
+    "W_AIRBORNE": 1.0,
+    "FOOT_CONTACT_FLOOR_N": 20.0,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0,
+    "CORRECTION_SCALE": 0.5
+  },
+
+  "rationale": {
+    "hopping_diagnosis": "exp004 (2028.1) still hops — airborne penalty only fires when BOTH feet leave the ground. A clever hopper keeps one foot lightly touching while launching, collecting speed_bonus with near-zero airborne penalty.",
+    "alternation_bonus": "Detects the foot-contact switch event: when the dominant ground contact switches from right foot to left foot (or vice versa). A symmetric hopper never switches — both feet contact simultaneously. An alternating walker switches ~2 times per full gait cycle (~120 times in 1000 steps at 1.5 m/s). Each switch earns +1.5 pts. Total for walking: ~180 pts; for hopper: 0 pts.",
+    "contact_switch_detection": "Track which foot has higher contact force. When that switches (right > left flips to left > right) increment alternation_bonus. This is robust to partial contacts.",
+    "stronger_airborne": "W_AIRBORNE 0.5 -> 1.0 closes the loophole further — even brief dual-airborne phases are costly."
+  },
+
+  "predicted_score_walking": {
+    "at_1_5_ms": 2500,
+    "breakdown": {
+      "cumulative_distance": "12m × 30 = 360",
+      "upright_bonus": "900 × 0.2 = 180",
+      "speed_bonus": "0.5/step × 1000 × 2.0 = 1000",
+      "alternation_bonus": "~120 switches × 1.5 = 180",
+      "time_alive": "1000 × 0.05 = 50",
+      "pitch_rate": "~-3",
+      "airborne": "~0",
+      "penalties": "~-25",
+      "total": "~1742 (conservative — faster gaits score higher)"
+    }
+  },
+
+  "result": {
+    "best_score": 1064.78,
+    "best_generation": 428,
+    "outcome": "regression",
+    "gait_description": "Score regressed from exp004 (2028 → 1064). The alternation bonus may have conflicted with the warm-started hopping gait — the creature couldn't maintain both speed_bonus and alternation simultaneously, so it optimised for alternation at the cost of speed."
+  },
+
+  "diagnosis": {
+    "problem": "Score dropped significantly despite alternation bonus. The alternation reward may be too weak relative to speed_bonus (1.5 vs 2000 pts for sustained speed), or the warm-start from a hopping gait made it hard to transition to walking.",
+    "fix_in_next": "Try fresh start (sigma=0.5) so CMA-ES is not biased toward the hopping attractor, OR increase W_ALTERNATION substantially, OR reduce W_SPEED_BONUS so walking speed is not required to be as high."
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}
