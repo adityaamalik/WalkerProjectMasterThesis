@@ -1,0 +1,12 @@
+{
+  "id": "exp017_cpg_v13_timer_step_smooth_warmstart",
+  "policy": "cpg",
+  "result": {
+    "best_score": 1502.77,
+    "best_generation": 299
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

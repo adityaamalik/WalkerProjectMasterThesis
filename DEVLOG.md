@@ -953,6 +953,56 @@ rather than requiring a fully trained MLP baseline.
 
 ---
 
+## Phase 14 — Current Reference Fitness (v13) and Manual Snapshot
+
+### Why this snapshot was added
+
+From exp010 onward, experiments were auto-archived by `train.py` with minimal
+metadata (score/generation/artifacts), but without a full fitness-function
+schema in each `experiment.json`.
+
+To preserve the exact logic used for the latest stable walking result, we
+manually documented the full objective in:
+
+- `experiments/exp018_cpg_v13_timer_step_smooth_scratch/experiment.json`
+
+This file is now the canonical reference for the current fitness setup.
+
+### Current objective (v13)
+
+The active fitness in `evaluate.py` is a dense additive score combining:
+
+1. **Locomotion rewards**
+   - forward distance
+   - net progress
+   - speed tracking around 1.2 m/s
+   - uprightness
+   - alternation and overtake events
+   - single-support time and time alive
+
+2. **New gait-shaping terms**
+   - **2-second lead-foot timer**: reward while a lead foot has been in front for <2s, penalty once >2s
+   - **step-length reward**: reward positive front-foot advancement at lead switches
+   - **velocity smoothness penalty**: penalise frame-to-frame torso velocity jumps
+
+3. **Stability/anti-hop penalties**
+   - backward motion
+   - flight time
+   - symmetric bilateral loading
+   - vertical velocity and pitch-rate oscillations
+   - impact/joint overuse
+   - scaled fall penalty
+   - low-net-progress penalty
+
+### Latest recorded result using this objective
+
+- `exp018_cpg_v13_timer_step_smooth_scratch`
+- score: **1596.79** at generation **499**
+- behaviour: stable forward walking, smoother than earlier runs, though stride-overstep
+  is still less pronounced than ideal human-like gait.
+
+---
+
 ## Open Questions / Future Work
 
 1. **Custom fitness tuning** — The current weight values are initial calibrated estimates. Systematic ablation (training with each component removed or scaled) would identify which terms most influence gait quality.

@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v16_overtake_term",
+  "policy": "cpg",
+  "result": {
+    "best_score": -60.12,
+    "best_generation": 2
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

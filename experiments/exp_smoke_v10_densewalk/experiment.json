@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v10_densewalk",
+  "policy": "cpg",
+  "result": {
+    "best_score": -132.31,
+    "best_generation": 9
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

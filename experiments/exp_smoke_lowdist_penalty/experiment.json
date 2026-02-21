@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_lowdist_penalty",
+  "policy": "cpg",
+  "result": {
+    "best_score": -160.66,
+    "best_generation": 4
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

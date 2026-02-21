@@ -55,9 +55,9 @@ import numpy as np
 
 N_JOINTS          = 6        # Walker2d actuators
 DT                = 0.008    # MuJoCo default timestep for Walker2d (125 Hz)
-CORRECTION_SCALE  = 0.5      # max fraction of torque range the MLP can add
-                              # v3: increased from 0.3 — gives MLP more authority to
-                              # push legs into a full stride rather than a shuffle
+CORRECTION_SCALE_DEFAULT = 0.5  # default max fraction of torque range the MLP can add
+                                # v3: increased from 0.3 — gives MLP more authority to
+                                # push legs into a full stride rather than a shuffle
 FB_HIDDEN         = 16       # feedback MLP hidden layer width
 FB_INPUT          = N_JOINTS + 17   # CPG outputs + proprioception
 
@@ -95,7 +95,7 @@ class CPGPolicy:
     action = policy(obs)                # call every timestep
     """
 
-    def __init__(self):
+    def __init__(self, correction_scale: float = CORRECTION_SCALE_DEFAULT):
         # CPG parameters (raw, before activation mapping)
         self._raw_A  = np.zeros(N_JOINTS)   # amplitude logits
         self._raw_w  = np.zeros(N_JOINTS)   # frequency logits
@@ -109,6 +109,7 @@ class CPGPolicy:
 
         # Internal oscillator phase (reset each episode)
         self._theta = np.zeros(N_JOINTS)
+        self.correction_scale = float(np.clip(correction_scale, 0.0, 1.0))
 
     # ── parameter interface ───────────────────────────────────────────────────
 
@@ -133,8 +134,12 @@ class CPGPolicy:
         ])
 
     @classmethod
-    def from_flat_params(cls, params: np.ndarray) -> "CPGPolicy":
-        policy = cls()
+    def from_flat_params(
+        cls,
+        params: np.ndarray,
+        correction_scale: float = CORRECTION_SCALE_DEFAULT,
+    ) -> "CPGPolicy":
+        policy = cls(correction_scale=correction_scale)
         policy.set_flat_params(params)
         return policy
 
@@ -183,7 +188,7 @@ class CPGPolicy:
     def __call__(self, obs: np.ndarray) -> np.ndarray:
         cpg_out  = self._cpg_step()
         fb_out   = self._feedback(obs, cpg_out)
-        action   = cpg_out + CORRECTION_SCALE * fb_out
+        action   = cpg_out + self.correction_scale * fb_out
         return np.clip(action, -1.0, 1.0)
 
     # ── diagnostics ──────────────────────────────────────────────────────────
@@ -202,5 +207,5 @@ class CPGPolicy:
                 f"{np.degrees(self.phase_offset[i]):>12.1f}°"
             )
         lines.append(f"\n  Feedback MLP hidden={FB_HIDDEN}  "
-                     f"correction_scale={CORRECTION_SCALE}")
+                     f"correction_scale={self.correction_scale}")
         return "\n".join(lines)

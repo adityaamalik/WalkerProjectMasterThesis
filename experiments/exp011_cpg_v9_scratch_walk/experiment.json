@@ -1,0 +1,12 @@
+{
+  "id": "exp011_cpg_v9_scratch_walk",
+  "policy": "cpg",
+  "result": {
+    "best_score": 0.0,
+    "best_generation": 0
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

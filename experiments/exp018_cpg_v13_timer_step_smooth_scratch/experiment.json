@@ -1,0 +1,89 @@
+{
+  "id": "exp018",
+  "name": "CPG hybrid — fitness v13 (front-foot timer + step length + velocity smoothness), scratch",
+  "date": "2026-02-21",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": null,
+  "changes_from_exp017": [
+    "Same v13 fitness logic as exp017, but trained from scratch (no checkpoint warm-start).",
+    "Kept staged training schedules: penalty_scale ramps 0.2→1.0 over 200 generations, correction_scale ramps 0.0→0.5 over 200 generations.",
+    "Objective includes front-foot timeout shaping, step-length reward, and velocity-change smoothness penalty."
+  ],
+  "training_schedule": {
+    "penalty_min": 0.2,
+    "penalty_ramp_gen": 200,
+    "correction_min": 0.0,
+    "correction_max": 0.5,
+    "correction_ramp_gen": 200
+  },
+  "fitness_function": {
+    "version": "v13_timer_step_smooth",
+    "source_file": "evaluate.py",
+    "formula": "distance*55 + net_progress*90 + speed_track*0.4 + upright*0.2 + alternation*5 + overtake*18 + front_timer_reward_steps*0.15 + step_length*120 + single_support*0.05 + time_alive*0.01 - front_timer_penalty_steps*0.3 - backward*50 - flight*1.8 - sym_contact*1.0 - z_velocity*0.18 - pitch_rate*0.08 - velocity_change*0.8 - joint_penalty*0.01 - impact_penalty*0.0015 - scaled_fall_penalty - scaled_low_progress_penalty",
+    "weights": {
+      "W_DISTANCE": 55.0,
+      "W_NET_PROGRESS": 90.0,
+      "W_SPEED_TRACK": 0.4,
+      "W_UPRIGHT": 0.2,
+      "W_ALTERNATION": 5.0,
+      "W_OVERTAKE": 18.0,
+      "W_FRONT_TIMER_REWARD": 0.15,
+      "W_FRONT_TIMER_PENALTY": 0.3,
+      "W_STEP_LENGTH": 120.0,
+      "W_SINGLE_SUPPORT": 0.05,
+      "W_TIME_ALIVE": 0.01,
+      "W_BACKWARD": 50.0,
+      "W_FLIGHT": 1.8,
+      "W_SYM_CONTACT": 1.0,
+      "W_Z_VELOCITY": 0.18,
+      "W_PITCH_RATE": 0.08,
+      "W_VEL_CHANGE": 0.8,
+      "W_JOINT_PENALTY": 0.01,
+      "W_IMPACT_PENALTY": 0.0015,
+      "FALL_PENALTY": 120.0,
+      "W_LOW_PROGRESS": 80.0
+    },
+    "constants": {
+      "TARGET_SPEED": 1.2,
+      "SPEED_TOLERANCE": 0.45,
+      "MIN_NET_PROGRESS_M": 2.0,
+      "MIN_CONTACT_STEPS": 30,
+      "MIN_LEAD_STEPS": 10,
+      "LEAD_DEADBAND_M": 0.02,
+      "MIN_OVERTAKE_SEP_M": 0.08,
+      "TARGET_OVERTAKE_SEP_M": 0.22,
+      "MIN_OVERTAKE_FORWARD_VEL": 0.35,
+      "FRONT_LEAD_TIMEOUT_S": 2.0,
+      "FOOT_CONTACT_FLOOR": 20.0
+    },
+    "notes": [
+      "Front-foot timer: 2-second countdown resets whenever lead foot changes; reward while timer >= 0, penalty once timer < 0.",
+      "Step-length reward: positive lead-foot x advance at each lead switch.",
+      "Velocity smoothness: per-frame penalty on torso velocity delta ||v_t - v_(t-1)||."
+    ]
+  },
+  "result": {
+    "best_score": 1596.79,
+    "best_generation": 499,
+    "outcome": "complete",
+    "gait_description": "Stable forward locomotion with alternating stepping and improved balance over earlier experiments; smoother than prior warm-started runs but still not fully human-like overtake stepping."
+  },
+  "diagnosis": {
+    "strengths": [
+      "Scratch training converged to high-scoring stable locomotion.",
+      "Timer + smoothness terms reduced prolonged same-foot lead and erratic velocity spikes."
+    ],
+    "remaining_issue": "Back leg still often catches up to front leg instead of clearly overtaking it every stride."
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

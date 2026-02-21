@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v13_netprogress",
+  "policy": "cpg",
+  "result": {
+    "best_score": -68.03,
+    "best_generation": 29
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

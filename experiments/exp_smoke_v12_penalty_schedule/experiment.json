@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v12_penalty_schedule",
+  "policy": "cpg",
+  "result": {
+    "best_score": 361.83,
+    "best_generation": 29
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

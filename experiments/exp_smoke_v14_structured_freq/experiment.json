@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v14_structured_freq",
+  "policy": "cpg",
+  "result": {
+    "best_score": -68.36,
+    "best_generation": 19
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

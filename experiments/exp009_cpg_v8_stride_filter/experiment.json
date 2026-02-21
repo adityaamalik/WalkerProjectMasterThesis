@@ -1,0 +1,73 @@
+{
+  "id": "exp009",
+  "name": "CPG hybrid — fitness v8 + stride-filtered alternation (MIN_CONTACT_STEPS=30)",
+  "date": "2026-02-18",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp003_cpg_v3_stride/checkpoints/best_params.npy",
+
+  "changes_from_exp008": [
+    "Stride-filtered alternation: foot must be dominant for MIN_CONTACT_STEPS=30 steps before switch counts",
+    "Kills vibration exploit: exp008 best policy had 360 raw switches but only 5 valid strides (30-step filter)",
+    "exp008 score collapses from 4107 → 579 under new filter — hopping no longer exploitable",
+    "Genuine walk at 1.5 m/s: ~120 valid strides → 600 pts alternation (correctly rewarded)"
+  ],
+
+  "fitness_function": {
+    "version": "v8+stride_filter",
+    "gate": "if cumulative_distance < 1.5m: return 0.0",
+    "alternation_filter": "switch only counts if previous stance >= MIN_CONTACT_STEPS=30 steps (0.24s)",
+    "MIN_DISTANCE_THRESHOLD": 1.5,
+    "MIN_CONTACT_STEPS": 30,
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_SPEED_BONUS": 1.0,
+    "MIN_SPEED_MS": 0.5,
+    "W_ALTERNATION": 5.0,
+    "W_TIME_ALIVE": 0.05,
+    "W_PITCH_RATE": 0.05,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0
+  },
+
+  "exploit_analysis": {
+    "exp008_best_policy": "360 raw alternation switches in 1000 steps (switch every 2.8 steps = 22ms)",
+    "exp008_score_old": 4107.7,
+    "exp008_score_new_filter": 579.0,
+    "genuine_walk_alternation": "~120 valid strides → 600 pts (still well rewarded)",
+    "vibration_alternation": "5 valid strides → 25 pts (exploit eliminated)"
+  },
+
+  "predicted_score_walking": {
+    "at_1_5_ms": 1768,
+    "breakdown": {
+      "gate": "PASSED (12m > 1.5m)",
+      "cumulative_distance": "12m × 30 = 360",
+      "speed_bonus": "1.0/step × 1000 × 1.0 = 1000",
+      "alternation_bonus": "~120 valid strides × 5.0 = 600",
+      "upright_bonus": "900 × 0.2 = 180",
+      "time_alive": "1000 × 0.05 = 50",
+      "penalties": "~-50",
+      "total": "~2140"
+    }
+  },
+
+  "result": {
+    "best_score": null,
+    "best_generation": null,
+    "outcome": "pending",
+    "gait_description": "TBD"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

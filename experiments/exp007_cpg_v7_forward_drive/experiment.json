@@ -1,0 +1,88 @@
+{
+  "id": "exp007",
+  "name": "CPG hybrid — fitness v7 (forward-gated bonuses + stagnation penalty)",
+  "date": "2026-02-18",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp006_cpg_v6_walking/checkpoints/best_params.npy",
+
+  "changes_from_exp006": [
+    "upright_bonus now motion-gated: only accumulates when x_vel > 0.2 m/s (standing still earns 0)",
+    "time_alive (W_TIME_ALIVE=0.05) replaced by progress_bonus (W_PROGRESS=0.05): only counts steps while moving",
+    "Added stagnation_penalty: per-step penalty = consecutive_stagnant_steps × 0.002 (quadratic cost for standing still)",
+    "W_ALTERNATION: 8.0 → 5.0 (one step not worth much; reward comes from sustained alternation)",
+    "MIN_MOVING_SPEED = 0.2 m/s threshold distinguishes moving vs stagnant"
+  ],
+
+  "fitness_function": {
+    "version": "v7",
+    "formula": "cumulative_distance*30 + upright(gated)*0.2 + speed_bonus*1.0 + alternation_bonus*5.0 + progress_bonus*0.05 - pitch_rate*0.05 - sym_contact*3.0 - stagnation_penalty - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*200",
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_SPEED_BONUS": 1.0,
+    "MIN_SPEED_MS": 0.5,
+    "W_ALTERNATION": 5.0,
+    "W_PROGRESS": 0.05,
+    "W_TIME_ALIVE": 0.0,
+    "W_PITCH_RATE": 0.05,
+    "W_SYM_CONTACT": 3.0,
+    "W_STAGNATION": 0.002,
+    "FOOT_CONTACT_FLOOR_N": 20.0,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0,
+    "MIN_MOVING_SPEED_MS": 0.2
+  },
+
+  "rationale": {
+    "exp006_diagnosis": "Creature took one step then stood still with legs wide apart. upright_bonus (~180 pts) and time_alive (~50 pts) paid unconditionally regardless of motion. One alternation switch earned 8 pts. Total for lazy balancing: ~238 pts, which was higher than attempting to walk and risk falling.",
+    "motion_gated_upright": "upright_bonus now requires x_vel > 0.2 m/s. A statue earns 0. A walking creature earns full bonus.",
+    "stagnation_penalty": "Quadratic cost: first stagnant step costs 0.002, second 0.004, ..., 999th costs 1.998. Standing still for 1000 steps costs 0.002×(1+2+...+999) = 999 pts — far worse than any fall.",
+    "warm_from_exp006": "Warm-start from exp006 because exp006 found the 'one good step' — we want to build on that and push forward."
+  },
+
+  "predicted_score_walking": {
+    "at_1_2_ms": 1813,
+    "breakdown": {
+      "cumulative_distance": "9.6m × 30 = 288",
+      "speed_bonus": "0.7/step × 1000 × 1.0 = 700",
+      "alternation_bonus": "120 switches × 5.0 = 600",
+      "upright_bonus_gated": "900 × 0.2 = 180 (only while moving)",
+      "progress_bonus": "900 × 0.05 = 45 (only while moving)",
+      "stagnation_penalty": "~0 (walker never stagnates)",
+      "sym_contact_penalty": "~0",
+      "pitch_rate": "~-20",
+      "total": "~1813"
+    }
+  },
+
+  "predicted_score_stander": {
+    "note": "One step then stand still for 999 steps",
+    "breakdown": {
+      "cumulative_distance": "~0",
+      "alternation_bonus": "5 (one switch)",
+      "upright_bonus": "0 (gated)",
+      "progress_bonus": "0 (gated)",
+      "stagnation_penalty": "-0.002 × (1+2+...+999) = -999",
+      "total": "~-994 (standing still now catastrophically bad)"
+    }
+  },
+
+  "result": {
+    "best_score": null,
+    "best_generation": null,
+    "outcome": "pending",
+    "gait_description": "TBD"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

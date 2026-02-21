@@ -1,0 +1,9 @@
+{
+  "score": -173.38,
+  "generation": 497,
+  "policy": "cpg",
+  "curriculum": "gradual_transition",
+  "gravity": -9.7514,
+  "phase": "ramp 99%",
+  "label": "all-time best"
+}

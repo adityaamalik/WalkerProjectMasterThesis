@@ -1,0 +1,87 @@
+{
+  "id": "exp006",
+  "name": "CPG hybrid — fitness v6 (symmetric contact penalty, strong alternation)",
+  "date": "2026-02-18",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp003_cpg_v3_stride/checkpoints/best_params.npy",
+
+  "changes_from_exp005": [
+    "Replaced W_AIRBORNE (airborne penalty) with W_SYM_CONTACT=3.0 (symmetric bilateral contact penalty)",
+    "W_ALTERNATION: 1.5 → 8.0 — alternation bonus now competitive with speed_bonus (~960 pts/ep for walking)",
+    "W_SPEED_BONUS: 2.0 → 1.0 — moderate walking speed earns bonus; hopping not 4× more valuable",
+    "MIN_SPEED: 1.0 → 0.5 m/s — lowered threshold so steady walking always earns speed bonus",
+    "Fresh start with sigma=0.5 (not warm from exp004 hopping attractor — warm from exp003 stride)"
+  ],
+
+  "fitness_function": {
+    "version": "v6",
+    "formula": "cumulative_distance*30 + upright*0.2 + speed_bonus*1.0 + alternation_bonus*8.0 + time_alive*0.05 - pitch_rate*0.05 - sym_contact_penalty*3.0 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*200",
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_VELOCITY": 0.0,
+    "W_SPEED_BONUS": 1.0,
+    "MIN_SPEED_MS": 0.5,
+    "W_ALTERNATION": 8.0,
+    "W_TIME_ALIVE": 0.05,
+    "W_PITCH_RATE": 0.05,
+    "W_AIRBORNE": 0.0,
+    "W_SYM_CONTACT": 3.0,
+    "FOOT_CONTACT_FLOOR_N": 20.0,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0
+  },
+
+  "rationale": {
+    "exp005_diagnosis": "W_ALTERNATION=1.5 was too weak vs speed_bonus (~2000 pts for hopper). CMA-ES correctly ignored alternation. Airborne penalty also easily exploited — hopper keeps one foot lightly touching while launching.",
+    "sym_contact_penalty": "Detects hopping via bilateral force symmetry at landing. Formula: penalty += 1 - |Fr-Fl|/(Fr+Fl+eps) when both feet loaded. A hopper lands symmetrically (~1.0 penalty) every stride; a walker always has one dominant foot (~0.0 penalty). This makes hopping structurally impossible to exploit.",
+    "strong_alternation": "W_ALTERNATION 1.5→8.0 means a walking gait (~120 switches/ep) earns ~960 pts. Combined with sym_contact_penalty=-900 for hopper, walking should now dominate CMA-ES's landscape.",
+    "warm_from_exp003": "exp003 produced striding (not hopping) but fell. Starting from this rather than exp004 avoids the hopping attractor bias."
+  },
+
+  "predicted_score_walking": {
+    "at_1_2_ms": 2178,
+    "breakdown": {
+      "cumulative_distance": "9.6m × 30 = 288",
+      "speed_bonus": "0.7/step × 1000 × 1.0 = 700",
+      "alternation_bonus": "120 switches × 8.0 = 960",
+      "upright_bonus": "900 × 0.2 = 180",
+      "time_alive": "1000 × 0.05 = 50",
+      "sym_contact_penalty": "~0 (load always asymmetric for walker)",
+      "pitch_rate": "~-20",
+      "penalties": "~-25",
+      "total": "~2178"
+    }
+  },
+
+  "predicted_score_hopper": {
+    "note": "Hopper at 3 m/s but penalised heavily",
+    "breakdown": {
+      "cumulative_distance": "~288",
+      "speed_bonus": "~700",
+      "alternation_bonus": "~0 (no switches — bilateral contact)",
+      "sym_contact_penalty": "~300 symmetric landings × 3.0 = -900",
+      "pitch_rate": "~-400",
+      "total": "~-312 (hopping should now be unprofitable)"
+    }
+  },
+
+  "result": {
+    "best_score": null,
+    "best_generation": null,
+    "outcome": "pending",
+    "gait_description": "TBD"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "exp008",
+  "name": "CPG hybrid — fitness v8 (distance threshold gate)",
+  "date": "2026-02-18",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "warm_start": "experiments/exp003_cpg_v3_stride/checkpoints/best_params.npy",
+
+  "changes_from_exp007": [
+    "Added MIN_DISTANCE_THRESHOLD=1.5m gate: if cumulative_distance < 1.5m, fitness=0.0 regardless of all other components",
+    "Removed all v6/v7 complexity: sym_contact_penalty, stagnation_penalty, motion-gating — back to clean simple fitness",
+    "Kept W_ALTERNATION=5.0 and MIN_SPEED=0.5 from v6/v7",
+    "Fresh start from exp003 (pre-hopping strider) — escape the one-step attractor entirely"
+  ],
+
+  "fitness_function": {
+    "version": "v8",
+    "gate": "if cumulative_distance < 1.5m: return 0.0",
+    "formula": "(cumulative_distance < 1.5m) ? 0.0 : cumulative_distance*30 + upright*0.2 + speed_bonus*1.0 + alternation_bonus*5.0 + time_alive*0.05 - pitch_rate*0.05 - joint_penalty*0.01 - impact_penalty*0.005 - fall_penalty*200",
+    "MIN_DISTANCE_THRESHOLD": 1.5,
+    "W_DISTANCE": 30.0,
+    "W_UPRIGHT": 0.2,
+    "W_SPEED_BONUS": 1.0,
+    "MIN_SPEED_MS": 0.5,
+    "W_ALTERNATION": 5.0,
+    "W_TIME_ALIVE": 0.05,
+    "W_PITCH_RATE": 0.05,
+    "W_JOINT_PENALTY": 0.01,
+    "W_IMPACT_PENALTY": 0.005,
+    "FALL_PENALTY": 200.0
+  },
+
+  "rationale": {
+    "exp007_diagnosis": "Stagnation penalty failed — creature wobbles slightly in place, intermittently triggering x_vel > 0.2 m/s and resetting the stagnation counter. All warm-starts from exp006/exp007 trapped in the same one-step basin.",
+    "threshold_gate": "Makes partial solutions (one step, fall immediately, stand still) score exactly 0.0 — identical to doing nothing. CMA-ES gets no gradient from these, is forced to find solutions that actually locomote 1.5m+.",
+    "fresh_from_exp003": "exp003 produced a striding gait before falling (not a standing exploit). Warm-starting from it avoids the one-step attractor entirely.",
+    "simplification": "Removed sym_contact, stagnation, motion-gating — they added complexity without solving the core problem. The gate is the only anti-exploit mechanism needed."
+  },
+
+  "predicted_score_walking": {
+    "at_1_2_ms": 1768,
+    "breakdown": {
+      "gate": "PASSED (9.6m > 1.5m)",
+      "cumulative_distance": "9.6m × 30 = 288",
+      "speed_bonus": "0.7/step × 1000 × 1.0 = 700",
+      "alternation_bonus": "120 switches × 5.0 = 600",
+      "upright_bonus": "900 × 0.2 = 180",
+      "time_alive": "1000 × 0.05 = 50",
+      "penalties": "~-50",
+      "total": "~1768"
+    }
+  },
+
+  "predicted_score_stander": {
+    "note": "One step then stand (travels ~0.1m)",
+    "gate": "FAILED (0.1m < 1.5m)",
+    "total": "0.0 — no gradient, no exploit"
+  },
+
+  "result": {
+    "best_score": null,
+    "best_generation": null,
+    "outcome": "pending",
+    "gait_description": "TBD"
+  },
+
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "best_params_meta": "checkpoints/best_params.json"
+  }
+}

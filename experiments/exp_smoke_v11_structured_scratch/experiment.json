@@ -1,0 +1,12 @@
+{
+  "id": "exp_smoke_v11_structured_scratch",
+  "policy": "cpg",
+  "result": {
+    "best_score": -130.18,
+    "best_generation": 19
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

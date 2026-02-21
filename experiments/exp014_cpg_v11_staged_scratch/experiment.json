@@ -1,0 +1,12 @@
+{
+  "id": "exp014_cpg_v11_staged_scratch",
+  "policy": "cpg",
+  "result": {
+    "best_score": 953.61,
+    "best_generation": 499
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}
