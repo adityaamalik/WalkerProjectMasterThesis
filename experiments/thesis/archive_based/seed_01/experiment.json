@@ -1,0 +1,31 @@
+{
+  "id": "seed_01",
+  "name": "Curriculum \u2014 ArchiveBased  [-1.6\u2192-3.0\u2192-5.0\u2192-7.0\u2192-9.81]  plateau=30gen  archive_size=5",
+  "curriculum": "archive_based",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "ArchiveBased  [-1.6\u2192-3.0\u2192-5.0\u2192-7.0\u2192-9.81]  plateau=30gen  archive_size=5",
+  "run": {
+    "seed": 1,
+    "arm": "archive_based",
+    "run_id": "archive_based_seed_01"
+  },
+  "result": {
+    "best_score": 1783.61,
+    "best_generation": 499,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

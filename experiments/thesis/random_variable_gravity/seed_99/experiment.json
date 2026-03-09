@@ -1,0 +1,31 @@
+{
+  "id": "seed_99",
+  "name": "Curriculum \u2014 RandomUniform  gravity U[-12.0, -6.0]  seed=99",
+  "curriculum": "random_uniform",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 10,
+  "population": 10,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "RandomUniform  gravity U[-12.0, -6.0]  seed=99",
+  "run": {
+    "seed": 99,
+    "arm": "random_variable_gravity",
+    "run_id": "random_variable_gravity_seed_99"
+  },
+  "result": {
+    "best_score": -34.93,
+    "best_generation": 9,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

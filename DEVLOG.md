@@ -1003,6 +1003,575 @@ The active fitness in `evaluate.py` is a dense additive score combining:
 
 ---
 
+## Phase 15 — Thesis Evaluation Protocol Instrumentation (3 Arms, 10 Seeds)
+
+Implemented the thesis-oriented evaluation pipeline to compare:
+
+1. `fixed_gravity` (constant Earth gravity)
+2. `random_variable_gravity` (non-curriculum control)
+3. `curriculum_variable_gravity` (ordered curriculum)
+
+### Reproducibility and logging updates
+
+- Added explicit `--seed` to both `train.py` and `train_curriculum.py`.
+- Wired seed into:
+  - structured scratch init RNG
+  - CMA-ES (`seed` option)
+  - rollout evaluation (`evaluate_parallel(..., base_seed=...)`)
+- Added optional run metadata fields to checkpoints:
+  - `seed`
+  - `arm`
+  - `run_id`
+
+### Protocol metrics now emitted per run
+
+- `training_log.csv` (per-generation best/mean/sigma/schedule terms)
+- `earth_probe.csv` (periodic Earth probes; default every 10 generations)
+- `gravity_sweep.csv` (final multi-gravity scorecard)
+- `summary.json` (TTE, final Earth scorecard, robustness summary, run context)
+
+### Gravity-agnostic fitness update for thesis runs
+
+- Kept objective terms tied to task success and stability:
+  - forward distance / net progress
+  - speed tracking
+  - uprightness
+  - survival
+  - fall penalty
+  - control/impact regularization
+- Disabled gait-style shaping terms in scoring:
+  - alternation/overtake/front-timer/step-length/single-support
+  - hop-signature contact penalties (flight/symmetric-loading)
+- Normalized penalty components by episode duration in `weighted_terms()` so
+  cross-gravity comparisons are less sensitive to episode length differences.
+
+TTE success thresholds used in code:
+
+- `net_progress_m >= 4.0`
+- `fell <= 0.20`
+- `backward_distance_m <= 1.0`
+- censoring at `max_gen + 10` (default `510`)
+
+### Curriculum strategy extensions
+
+- Added `random_uniform` strategy (`curriculum/random_uniform.py`) for the non-curriculum variable-gravity control arm.
+- Updated registry (`curriculum/__init__.py`) so strategy constructors can consume relevant kwargs (seed/bounds).
+
+### Batch execution + aggregation scripts
+
+Added:
+
+- `scripts/run_thesis_batch.py`
+  - default **10 seeds** (`0..9`) per arm
+  - standardized output layout: `experiments/thesis/<arm>/seed_<NN>/`
+  - run manifest: `experiments/thesis/run_manifest.json`
+
+- `scripts/aggregate_thesis_results.py`
+  - checks seed completeness (expects 10 completed seeds/arm by default)
+  - computes seed-level median/Q1/Q3/IQR metrics
+  - computes pairwise Mann-Whitney U tests
+  - writes:
+    - `experiments/thesis/aggregated_metrics.csv`
+    - `experiments/thesis/aggregated_summary.json`
+    - `experiments/thesis/stats_report.md`
+
+---
+
+---
+
+## Phase 16 — Bugfix: Penalty/Correction Scale Ramp Missing from `train_curriculum.py`
+
+### Problem identified
+
+Post-experiment audit revealed that `train.py` (fixed gravity arm) and
+`train_curriculum.py` (random variable + curriculum arms) evaluated candidates
+under different conditions during training.
+
+**`train.py`** explicitly computes and passes per-generation schedules to
+`evaluate_parallel`:
+
+```python
+penalty_scale = min(1.0, 0.2 + 0.8 * (gen / 200))   # ramps 0.2 → 1.0
+correction_scale = min(0.5, 0.0 + 0.5 * (gen / 200)) # ramps 0.0 → 0.5
+fitness = evaluate_parallel(..., penalty_scale=penalty_scale,
+                                 correction_scale=correction_scale)
+```
+
+**`train_curriculum.py`** did not pass these arguments at all, so
+`evaluate_parallel` used its default values (`penalty_scale=1.0`,
+`correction_scale=0.5`) from generation 0.
+
+### Why this is a confound
+
+The penalty/correction ramp in scratch training has two effects:
+
+1. **Softened penalties early on** — backward, pitch-rate, velocity-change, and
+   low-progress penalties are scaled to 20% of full strength at gen 0 and ramp
+   up over 200 generations. This gives CMA-ES a smoother early fitness landscape
+   where it can find forward locomotion before being heavily penalised for
+   imperfect form.
+
+2. **Disabled feedback MLP early on** — `correction_scale=0.0` at gen 0 forces
+   early exploration to happen in the pure-CPG subspace (18 parameters).
+   By gen 200 the MLP feedback is gradually introduced. This prevents CMA-ES
+   from wasting early evaluations on noisy feedback-MLP dimensions before the
+   CPG rhythm is established.
+
+Because only the fixed gravity arm received this ramp, it operated under
+materially easier optimisation conditions for the first 200 generations. This is
+a direct confound in the Time-to-Earth-Success comparison: the fixed gravity
+arm's lower median TTE (360 vs 490 vs 500) may be partially attributable to
+the easier early landscape rather than solely to the constant Earth gravity.
+
+The comparison between the two curriculum arms (random vs ordered curriculum)
+is unaffected — both used the same uncorrected defaults.
+
+### Fix applied (`train_curriculum.py`)
+
+1. **Added matching constants** at module level (identical values to `train.py`):
+   ```python
+   PENALTY_SCALE_MIN = 0.2
+   PENALTY_SCALE_RAMP_GEN = 200
+   CORR_SCALE_MIN = 0.0
+   CORR_SCALE_MAX = 0.5
+   CORR_SCALE_RAMP_GEN = 200
+   ```
+
+2. **Added CLI flags** — `--penalty-min`, `--penalty-ramp-gen`, `--corr-min`,
+   `--corr-max`, `--corr-ramp-gen` — identical interface to `train.py`.
+
+3. **Added `resolve_schedule_args()`** helper (duplicated from `train.py`)
+   with the same warm-start vs scratch defaults logic.
+
+4. **Detected `warm_start` flag** from the checkpoint argument (same as
+   `train.py`), and resolved the schedule before the CMA-ES loop.
+
+5. **Per-generation ramp computation** inserted in the training loop before
+   the `evaluate_parallel` call:
+   ```python
+   penalty_scale = min(1.0, penalty_min + (1.0 - penalty_min) * (gen / ramp_gen))
+   correction_scale = min(corr_max, corr_min + (corr_max - corr_min) * (gen / ramp_gen))
+   fitness = evaluate_parallel(..., penalty_scale=penalty_scale,
+                                    correction_scale=correction_scale)
+   ```
+
+6. **Logging additions** — `penalty_scale` and `correction_scale` added to the
+   per-generation `history` dict, `training_log.csv` fieldnames, the console
+   header/row, and `summary.json["schedule"]`.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `train_curriculum.py` | Added constants, CLI args, `resolve_schedule_args()`, warm_start detection, per-generation ramp, `evaluate_parallel` now receives explicit scales, updated logging |
+| `DEVLOG.md` | This entry |
+
+### Impact on existing results
+
+The 30-run thesis experiment (10 seeds × 3 arms) was run with the old
+`train_curriculum.py`. Its results are still valid for the comparison
+between the two curriculum arms (random vs ordered) because both used the
+same uncorrected defaults. The comparison between fixed gravity and the
+curriculum arms is confounded as described above. If the experiment is re-run
+with this fix, all three arms will use identical penalty/correction schedules
+and the fixed-gravity advantage should shrink or disappear for TTE.
+
+---
+
+---
+
+## Phase 17 — Bugfix: Replace `best_score` Comparison Metric with `best_earth_probe_score`
+
+### Problem identified
+
+The aggregated thesis results compared `best_score` across all three arms. This
+field holds the all-time best CMA-ES fitness seen during training — but training
+fitness is measured at the **current generation's scheduled gravity**, not at a
+fixed reference:
+
+| Arm | Gravity when `best_score` is recorded |
+|-----|--------------------------------------|
+| fixed_gravity | Always -9.81 (Earth) |
+| random_variable_gravity | Some random g ∈ [-6, -12] |
+| curriculum_variable_gravity | Some curriculum g ∈ [-2, -9.81] |
+
+Comparing these values across arms is meaningless: a score of 1700 achieved at
+-2.0 m/s² (trivially easy, agent falls slowly) is not the same achievement as
+1700 at -9.81 m/s². The statistical tests on this metric were therefore invalid.
+
+### Fix
+
+Replaced `best_score` as a comparison metric with **`best_earth_probe_score`**:
+the highest fitness score seen across all periodic Earth probes during training.
+Earth probes always evaluate at g = -9.81 with a fixed `penalty_scale=1.0` and
+`correction_scale=0.5`, so this metric is on a consistent scale across all arms.
+
+### Changes
+
+**`train.py`** and **`train_curriculum.py`**:
+- Compute `best_earth_probe_score = max(p["score"] for p in earth_probes)` after
+  the training loop.
+- Write it to `summary.json` alongside (not replacing) `best_score`.
+  `best_score` is retained because it still drives checkpoint saving during
+  training; only the comparison metric changes.
+
+**`scripts/aggregate_thesis_results.py`**:
+- `METRICS` list: `"best_score"` → `"best_earth_probe_score"`.
+- `parse_seed_record`: reads `summary["best_earth_probe_score"]`; added a
+  **CSV fallback** that computes `max(score)` from `earth_probe.csv` when the
+  summary field is absent. This means the existing 30-run thesis dataset can
+  be re-aggregated immediately without re-running any training — the
+  `earth_probe.csv` files are already present for all runs.
+- `write_aggregated_csv` fieldnames updated to match.
+
+### Impact on existing results
+
+Re-running `aggregate_thesis_results.py` on the existing thesis data will
+produce corrected aggregated output. The `earth_probe.csv` fallback path means
+no training re-runs are required.
+
+---
+
+## Phase 18 — Bugfix: `best_params` Selection Bias in Curriculum Arms
+
+### Problem identified
+
+After training, both `train.py` and `train_curriculum.py` used `best_params` —
+the parameter vector that achieved the highest **training fitness** — for all
+final evaluations: the Earth-gravity scorecard, the gravity robustness sweep,
+and the `summary.json` metrics.
+
+For the **fixed gravity arm** this is harmless: training fitness is always
+measured at g = -9.81 (Earth), so the parameter vector that maximises training
+fitness is also the one that performs best on Earth.
+
+For the **random variable gravity** and **curriculum variable gravity arms**
+this is a latent bias:
+
+| Arm | Gravity when `best_params` is selected |
+|-----|-----------------------------------------|
+| fixed_gravity | g = -9.81 always |
+| random_variable_gravity | Some random g ∈ [-6, -12] |
+| curriculum_variable_gravity | Some curriculum g ∈ [-2, -9.81] |
+
+The policy that maximises fitness at, e.g., g = -2.0 m/s² may be a
+low-gravity specialist — exploiting the slow fall dynamics rather than
+developing genuine Earth-gravity locomotion. When this policy is then
+evaluated at Earth gravity, the final scorecard metrics will be misleadingly
+low, making curriculum training appear worse than it actually is.
+
+Evidence in the existing thesis data: `experiments/thesis/curriculum_variable_gravity/seed_00/summary.json`
+showed `best_score = 708` recorded at generation 499, but the final Earth
+evaluation yielded `fell = 1.0` and `net_progress_m = 1.90 m` — a large
+discrepancy consistent with the selected policy being specialised for a
+non-Earth gravity.
+
+### Fix applied (`train.py` and `train_curriculum.py`)
+
+Introduce a separate **`best_earth_params`** tracker that is updated
+exclusively from the periodic Earth probes (every 10 generations, always at
+g = -9.81, `penalty_scale=1.0`, `correction_scale=0.5`). The final evaluations
+use this parameter vector instead of `best_params`.
+
+1. **Initialisation** (before the training loop):
+   ```python
+   best_earth_probe_score_so_far = -np.inf
+   best_earth_params = x0.copy()
+   ```
+
+2. **Probe block update** (each Earth probe):
+   ```python
+   is_new_best_earth = probe_score > best_earth_probe_score_so_far
+   if is_new_best_earth:
+       best_earth_probe_score_so_far = probe_score
+       best_earth_params = best_solution.copy()
+       save_checkpoint(
+           best_earth_params,
+           os.path.join(ckpt_dir, "best_earth_params.npy"),
+           meta={...},
+       )
+   print(
+       f"  [probe] gen={gen} score={probe_row['score']:.1f} ..."
+       + (" [new best earth]" if is_new_best_earth else "")
+   )
+   ```
+   The `is_new_best_earth` flag is captured **before** updating
+   `best_earth_probe_score_so_far` to avoid the always-True condition that
+   would result from evaluating it after the update.
+
+3. **Parameter selection after the training loop**:
+   ```python
+   # Use the policy that achieved the best Earth-gravity probe score for all
+   # final evaluations; fall back to best_params only if no probes occurred.
+   eval_params = best_earth_params if earth_probes else best_params
+   print(
+       f"Eval params  → {'best_earth_params' if earth_probes else 'best_params'} "
+       f"(earth probe score: {best_earth_probe_score_so_far:.1f})"
+   )
+   ```
+
+4. **Final Earth scorecard and gravity sweep** now pass `params=eval_params`
+   instead of `params=best_params`.
+
+5. **Summary dict** uses `best_earth_probe_score_so_far` directly (which was
+   already being tracked) instead of recomputing `max(...)` over earth_probes.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `train.py` | Added `best_earth_probe_score_so_far` + `best_earth_params` tracking; probe block saves `best_earth_params.npy` checkpoint on new best; `eval_params` selection; final evaluations use `eval_params`; summary uses `best_earth_probe_score_so_far` |
+| `train_curriculum.py` | Identical changes to `train.py` |
+| `DEVLOG.md` | This entry |
+
+### Impact on existing results
+
+The 30-run thesis dataset was collected with `best_params` as the evaluation
+policy. For the fixed gravity arm the change has no effect (training and Earth
+gravity coincide). For the curriculum arms the final Earth scores may increase
+if a better-on-Earth policy existed earlier in training than the one with the
+highest training-gravity fitness score. Re-running the experiment with this
+fix will produce unbiased final evaluation metrics for all three arms.
+
+---
+
+## Phase 19 — Bugfix: Probe/Final Evaluation Correction-Scale Parity
+
+### Problem identified
+
+A post-fix review found one remaining inconsistency between the thesis protocol
+and implementation: Earth probes in `train.py` were still using the **training**
+`correction_scale` ramp value at that generation, while curriculum arms were
+probing with a fixed value (`0.5`). Final Earth/sweep evaluation in `train.py`
+was also tied to `schedule["corr_max"]` instead of a fixed thesis setting.
+
+This breaks strict cross-arm comparability for `best_earth_probe_score` and can
+bias final scorecards when custom `--corr-max` is used.
+
+### Fix applied
+
+1. Introduced a shared constant in both training entrypoints:
+   `THESIS_EVAL_CORR_SCALE = 0.5`.
+
+2. Standardised Earth probe evaluation to always use:
+   - `penalty_scale=1.0`
+   - `correction_scale=THESIS_EVAL_CORR_SCALE`
+
+3. Standardised final Earth scorecard and gravity sweep evaluation to use the
+   same fixed correction scale in both `train.py` and `train_curriculum.py`.
+
+4. Made `best_earth_probe_score` summary output robust when probes are disabled:
+   it is now `null` instead of `-inf` in `summary.json` when no probe rows exist.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `train.py` | Fixed Earth probe/final/sweep correction-scale parity; no-probe summary handling for `best_earth_probe_score` |
+| `train_curriculum.py` | Unified probe/final/sweep on shared thesis correction-scale constant; no-probe summary handling for `best_earth_probe_score` |
+| `DEVLOG.md` | This entry |
+
+### Impact
+
+After this fix, all three arms are evaluated under the same Earth probe/final
+conditions, so `best_earth_probe_score`, final Earth scorecard, and gravity
+sweep metrics are directly comparable for thesis statistics.
+
+---
+
+## Phase 20 — Bugfix: Scratch Initialisation Asymmetry in `train_curriculum.py`
+
+### Problem identified
+
+`train.py` (fixed gravity arm) initialised CMA-ES from a structured biological
+prior via `make_structured_scratch_init()`:
+
+```python
+x0 = make_structured_scratch_init(seed=args.seed)
+# CPG amplitudes:  logit = -1.9  →  sigmoid(-1.9) ≈ 0.13 (small, gentle)
+# CPG frequencies: logit = -0.2  →  moderate
+# MLP weights:     normal(0, 0.02) — near-zero
+```
+
+`train_curriculum.py` (random + curriculum arms) initialised from a plain
+random normal:
+
+```python
+rng = np.random.default_rng(args.seed)
+x0 = rng.normal(0.0, 0.1, n_params)
+# CPG amplitudes:  logit ≈ 0  →  sigmoid(0) = 0.5 (~4× larger)
+# MLP weights:     normal(0, 0.1) — 5× larger (though nulled by corr_scale=0)
+```
+
+This is a cross-arm asymmetry in initial search-space position. The fixed
+gravity arm starts near a low-amplitude, low-frequency CPG regime where early
+rollouts are less likely to cause immediate falls, while curriculum arms start
+with more aggressive initial oscillations. Even though CMA-ES with σ₀=0.5
+quickly explores far from x₀, this asymmetry can bias early-generation
+dynamics and therefore influence TTE.
+
+### Fix applied (`train_curriculum.py`)
+
+1. Added `N_JOINTS` to the `cpg_policy` import.
+2. Copied `make_structured_scratch_init()` verbatim from `train.py` into
+   `train_curriculum.py` (helpers section), with a docstring noting it is
+   intentionally identical to `train.py`.
+3. Removed the module-level `rng = np.random.default_rng(args.seed)`.
+4. Replaced both scratch-init sites (normal fresh start and the
+   wrong-checkpoint-size fallback) with `make_structured_scratch_init(seed=args.seed)`.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `train_curriculum.py` | Added `N_JOINTS` import; added `make_structured_scratch_init()`; removed `rng`; replaced `rng.normal(...)` with structured init in both init paths |
+| `DEVLOG.md` | This entry |
+
+### Impact on existing results
+
+The existing 30-run thesis dataset used the unstructured init for curriculum
+arms. A re-run with this fix ensures all three arms begin from the same CPG
+prior, removing the last known cross-arm asymmetry in starting conditions.
+
+---
+
+## Phase 21 — Five Curriculum Learning Strategies (Extended Thesis Experiment)
+
+### Motivation
+
+The original thesis compared one ordered curriculum (GradualTransition,
+g=-2.0→-9.81) against fixed gravity and random variable gravity. To determine
+whether the null result was specific to that curriculum design or universal,
+five qualitatively distinct strategies are now implemented and compared on 10
+seeds each, yielding a 70-run experiment (2 control arms + 5 curriculum arms).
+
+### Strategy overview
+
+| Name | Key mechanism | Extra eval cost |
+|------|--------------|-----------------|
+| **GradualTransition** (updated) | Linear ramp Moon→Earth (-1.6→-9.81) | 1× |
+| **StagedEvolution** | 3 discrete stages, ES restarts at transitions | 1× |
+| **MultiEnvironment** | Simultaneous 3-gravity eval, weighted fitness | 3× |
+| **AdaptiveProgression** | Fitness-plateau detection triggers gravity advance | 1× |
+| **ArchiveBased** | Top-K archive per gravity; seeds next level from archive | 1× |
+
+### Architecture
+
+**`curriculum/base.py`** — `CurriculumBase` abstract class with default no-op
+implementations of the full extended interface. Existing strategies
+(`GradualTransition`, `RandomUniform`) inherit from it with no behaviour change.
+
+Extended hooks (all optional, no-ops in base):
+
+| Hook | Called by training loop | Used by |
+|------|------------------------|---------|
+| `eval_gravities(gen, max_gen)` | before `evaluate_parallel` | MultiEnvironment |
+| `combine_fitness(scores)` | after per-gravity eval | MultiEnvironment |
+| `notify(gen, max_gen, best, mean, sigma)` | after probe/plot | Adaptive, Archive |
+| `at_stage_boundary(gen, max_gen)` | after notify | Staged, Adaptive, Archive |
+| `get_seed_params()` | after at_stage_boundary → True | Archive |
+| `on_new_best(params, score, gen)` | after es.tell() every gen | Archive |
+
+**`curriculum/staged_evolution.py`** — Gravity switches at fixed generation
+fractions (default: 1/3 Moon, 1/3 mid -5.0, 1/3 Earth). `at_stage_boundary()`
+uses `_last_stage` tracking and returns True once per transition. The training
+loop restarts CMA-ES centred on `best_params` with original sigma at each
+boundary (CMA-ES analogue of "top-20–50% population transfer").
+
+**`curriculum/multi_environment.py`** — `eval_gravities()` returns three
+gravities [-1.6, -5.0, -9.81]. The training loop calls `evaluate_parallel`
+once per gravity, then calls `combine_fitness()` (weighted mean: 0.20 / 0.30 /
+0.50) to produce a single scalar per candidate. `gravity()` always returns the
+target gravity (-9.81) so Earth probes and final evaluations are unaffected.
+
+**`curriculum/adaptive_progression.py`** — Five levels [-1.6, -3.0, -5.0,
+-7.0, -9.81]. `notify()` tracks per-level best fitness; if 30 consecutive
+generations improve by < 5.0 units, the level advances and
+`at_stage_boundary()` returns True on the next call. ES is restarted from
+`best_params` at each advance.
+
+**`curriculum/archive_based.py`** — Same plateau logic as AdaptiveProgression.
+`on_new_best()` maintains a top-5 archive per gravity level (compared against
+archive's worst entry — proper top-K semantics). When advancing, `get_seed_params()`
+returns the best archived solution from the *previous* level to warm-start the
+new CMA-ES, enabling knowledge transfer without catastrophic forgetting.
+
+### Training loop changes (`train_curriculum.py`)
+
+1. **Loop guard**: `while not es.stop() and gen < args.generations:` — ensures
+   correct termination after ES restarts.
+
+2. **Multi-gravity evaluation path**: if `strategy.eval_gravities()` returns
+   more than one gravity, `evaluate_parallel` is called once per gravity (prime
+   seed offsets keep candidate streams disjoint), then `strategy.combine_fitness()`
+   aggregates per-candidate scores. Single-gravity strategies use the existing path.
+
+3. **Archive hook**: `strategy.on_new_best(best_solution, best_gen, gen)` called
+   every generation immediately after `es.tell()`.
+
+4. **Notify + stage boundary**: `strategy.notify(...)` called after probe/plot.
+   If `strategy.at_stage_boundary()` returns True, a new CMA-ES is constructed
+   from `strategy.get_seed_params()` (or `best_params`) with the original sigma.
+   `remaining = args.generations - gen - 1` caps the new ES's budget correctly.
+
+### Batch runner and aggregator
+
+**`scripts/run_thesis_batch.py`**:
+- `ARMS_DEFAULT` updated to the 7-arm set (2 control + 5 curriculum).
+- `curriculum_variable_gravity` retained as a legacy arm for the original dataset.
+- New `--gravity-start` / `--gravity-end` CLI flags control the Moon→Earth start
+  for the `gradual_transition` arm (default -1.6 → -9.81).
+
+**`scripts/aggregate_thesis_results.py`**:
+- `ARMS_DEFAULT` extended to include all 8 arm names (7 new + 1 legacy).
+- Unknown-arm error message now sorts the allowed list for readability.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `curriculum/base.py` | New — CurriculumBase with full extended interface |
+| `curriculum/staged_evolution.py` | New — StagedEvolution |
+| `curriculum/multi_environment.py` | New — MultiEnvironment |
+| `curriculum/adaptive_progression.py` | New — AdaptiveProgression |
+| `curriculum/archive_based.py` | New — ArchiveBased |
+| `curriculum/__init__.py` | Registers all 6 strategies; updated docstring |
+| `curriculum/gradual_transition.py` | Now inherits CurriculumBase |
+| `curriculum/random_uniform.py` | Now inherits CurriculumBase |
+| `train_curriculum.py` | Loop guard; multi-gravity eval; on_new_best; notify + stage restart |
+| `scripts/run_thesis_batch.py` | 5 new arms; gravity-start/end flags; legacy arm preserved |
+| `scripts/aggregate_thesis_results.py` | 5 new arms in ARMS_DEFAULT |
+| `DEVLOG.md` | This entry |
+
+### Experimental design for new thesis run
+
+```
+Arms (7 total, 10 seeds each = 70 runs):
+  fixed_gravity              — control, train.py
+  random_variable_gravity    — control, random_uniform U[-12, -6]
+  gradual_transition         — Moon→Earth (-1.6→-9.81), 20% warmup
+  staged_evolution           — 3 equal stages, ES restart at transitions
+  multi_environment          — 3-gravity eval (Moon/mid/Earth), weighted 0.2/0.3/0.5
+  adaptive_progression       — 5 levels, plateau=30gen, min_improve=5.0
+  archive_based              — 5 levels, archive top-5, seeded restarts
+
+Launch: python scripts/run_thesis_batch.py --arms fixed_gravity,...
+```
+
+### Wall-clock cost estimate
+
+| Arm | Relative cost | Notes |
+|-----|--------------|-------|
+| fixed_gravity | 1× | baseline |
+| random_variable_gravity | 1× | |
+| gradual_transition | 1× | |
+| staged_evolution | 1× | restarts add negligible overhead |
+| multi_environment | ~3× | 3 evaluate_parallel calls per generation |
+| adaptive_progression | 1× | plateau check is O(1) |
+| archive_based | 1× | archive ops are O(K log K) per gen |
+
+---
+
 ## Open Questions / Future Work
 
 1. **Custom fitness tuning** — The current weight values are initial calibrated estimates. Systematic ablation (training with each component removed or scaled) would identify which terms most influence gait quality.
@@ -1016,3 +1585,107 @@ The active fitness in `evaluate.py` is a dense additive score combining:
 5. **Larger population** — `--pop 40` is the minimum recommended for n=504. Increasing to `--pop 80` or `--pop 100` would improve exploration at the cost of more evaluations per generation.
 
 6. **Neuroevolution alternatives** — NEAT (NeuroEvolution of Augmenting Topologies) evolves both weights and network structure simultaneously and may find more compact solutions than a fixed architecture.
+
+---
+
+## Phase 22 — Analysis Improvements: Mean Probe Score, Effect Size r, BH-FDR, Probe Curves
+
+### Motivation
+
+After designing the 7-arm 70-seed experiment (Phase 21), three gaps in the
+post-processing pipeline were identified and addressed:
+
+1. **No learning-trajectory metric** — `best_earth_probe_score` captures peak
+   performance but not speed of learning.  `tte_generation` is binary/censored
+   and ignores partial progress in failing runs.
+
+2. **No effect size reporting** — Mann-Whitney U tests reported raw p-values
+   only.  With 7 arms × C(7,2)=21 pairwise tests × 5 metrics = 105 tests,
+   raw p-values are misleading without multiple-testing correction.
+
+3. **No generation-by-generation visualisation** — Learning trajectories were
+   invisible in the per-seed summary tables.
+
+### Changes
+
+#### 1. `mean_earth_probe_score` — learning efficiency metric
+
+Added to both `METRICS` and `parse_seed_record()` in
+`scripts/aggregate_thesis_results.py`.
+
+Definition: arithmetic mean of all `score` values in `earth_probe.csv`
+across all probe generations.  For equally-spaced probes (every 10 gens)
+this is equivalent to trapezoidal AUC / max_gen — the "average Earth
+performance over training".
+
+Properties:
+- Same scale as individual probe scores (~-300 baseline, ~2000 ceiling).
+- Uncensored: partial progress counts even for runs that never reach the
+  TTE threshold.
+- Complements `best_earth_probe_score` (peak): high best + low mean implies
+  a late breakthrough; high best + high mean implies steady early learning.
+
+Implementation: `earth_probe.csv` is now read once in `parse_seed_record()`
+and reused for mean score, `best_earth_probe_score` fallback, and the
+`final_net_progress_m` fallback — previously the CSV was read twice as a
+fallback only.
+
+#### 2. Effect size r + Benjamini-Hochberg FDR correction
+
+`mann_whitney_u()` now returns `effect_size_r` for every comparison where
+`n >= 2`.
+
+Formula:
+```
+Z = (U1 - n1*n2/2) / sqrt(n1*n2*(n1+n2+1)/12)   # normal approximation, uncorrected std
+r = |Z| / sqrt(n1 + n2)                           # Cohen (1988) convention
+```
+
+Interpretation: r >= 0.1 small, r >= 0.3 medium, r >= 0.5 large.
+
+`bh_fdr_correct()` — new function that applies Benjamini-Hochberg correction
+within each metric family (21 tests per metric for 7 arms).  Returns adjusted
+p-values (`p_adj`) that control false discovery rate at 5%.  BH is preferred
+over Bonferroni here because the comparisons are exploratory and the penalty
+of a false negative is high.
+
+Both `effect_size_r` and `p_adj` appear in `stats_report.md` and the
+`aggregated_summary.json` pairwise test records.
+
+#### 3. Probe learning curve aggregation + visualisation
+
+`build_probe_curves()` — new function in the aggregator that reads every
+seed's `earth_probe.csv` and aggregates scores per (arm, generation):
+- `n_seeds` — seeds contributing a probe at that generation
+- `median_score`, `q1_score`, `q3_score` — distribution across seeds
+- `mean_score` — arithmetic mean
+
+Output: `experiments/thesis/aggregated_probe_curves.csv`
+
+`scripts/plot_probe_curves.py` — new standalone script that reads the CSV
+and produces `experiments/thesis/probe_learning_curves.png`:
+- One line per arm (median), with IQR shading
+- Configurable via `--arms`, `--output`, `--figsize`, `--dpi`
+- Handles missing matplotlib gracefully
+
+### Output files added / updated
+
+| File | Description |
+|---|---|
+| `experiments/thesis/aggregated_metrics.csv` | Now includes `mean_earth_probe_score` column |
+| `experiments/thesis/aggregated_probe_curves.csv` | New: (arm, gen) median/Q1/Q3/mean |
+| `experiments/thesis/probe_learning_curves.png` | New: learning trajectory figure |
+| `experiments/thesis/stats_report.md` | Now includes `r` and `p_adj (BH)` columns |
+
+### Sanity check on existing data
+
+Running the updated aggregator on the current 22-seed dataset (11 fixed,
+11 random, smoke seeds for 5 new arms) showed:
+
+- fixed_gravity: `mean_earth_probe_score` median ~538 vs `best` median ~1188
+  => on average the agent performed at ~45% of its peak during training (makes
+  sense — progress is gradual and the early gens drag the mean down).
+- random_variable_gravity: mean ~466 vs best ~1189 => ~39% of peak,
+  suggesting a slightly slower or less stable learning trajectory.
+- fixed vs random: `tte_generation` r=0.27 (small), p_adj=0.30 — confirms
+  the two-arm comparison is underpowered at n=11, consistent with expectations.

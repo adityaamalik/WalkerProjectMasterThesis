@@ -1,0 +1,12 @@
+{
+  "score": 1366.49,
+  "generation": 280,
+  "policy": "cpg",
+  "curriculum": "random_uniform",
+  "gravity": -8.2321,
+  "phase": "random",
+  "label": "gen 280 snapshot",
+  "seed": 6,
+  "arm": "random_variable_gravity",
+  "run_id": "random_variable_gravity_seed_06"
+}

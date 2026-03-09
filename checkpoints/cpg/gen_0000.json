@@ -1,6 +1,9 @@
 {
-  "score": -37.76,
+  "score": -50.85,
   "generation": 0,
   "policy": "cpg",
-  "label": "gen 0 snapshot"
+  "label": "gen 0 snapshot",
+  "seed": 123,
+  "arm": "fixed_gravity",
+  "run_id": "smoke_fixed_123"
 }

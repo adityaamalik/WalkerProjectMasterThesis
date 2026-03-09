@@ -1,0 +1,10 @@
+{
+  "score": -328.97,
+  "generation": 0,
+  "policy": "cpg",
+  "curriculum": "random_uniform",
+  "label": "final (all-time best)",
+  "seed": 123,
+  "arm": "random_variable_gravity",
+  "run_id": "smoke_random_123"
+}

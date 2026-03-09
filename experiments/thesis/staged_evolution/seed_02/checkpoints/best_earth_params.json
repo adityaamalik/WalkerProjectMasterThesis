@@ -1,0 +1,11 @@
+{
+  "score": 1708.31,
+  "generation": 410,
+  "policy": "cpg",
+  "curriculum": "staged_evolution",
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 2,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_02"
+}

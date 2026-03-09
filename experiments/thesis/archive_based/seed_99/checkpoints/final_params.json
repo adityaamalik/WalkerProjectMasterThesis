@@ -1,0 +1,10 @@
+{
+  "score": -61.74,
+  "generation": 9,
+  "policy": "cpg",
+  "curriculum": "archive_based",
+  "label": "final (all-time best)",
+  "seed": 99,
+  "arm": "archive_based",
+  "run_id": "archive_based_seed_99"
+}

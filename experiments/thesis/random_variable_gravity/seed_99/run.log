@@ -1,0 +1,37 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : RandomUniform  gravity U[-12.0, -6.0]  seed=99
+Run context | seed=99 arm=random_variable_gravity run_id=random_variable_gravity_seed_99
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+Checkpoints → experiments/thesis/random_variable_gravity/seed_99/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-472.1 net=-0.747 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis/random_variable_gravity/seed_99/fitness_curve.png
+    0       -65.5       -76.9    0.4958   0.20   0.00    -8.9638  random             1.3s
+    1       -63.3       -74.9    0.4918   0.20   0.00    -9.6778  random             0.1s
+    2       -53.1       -75.2    0.4881   0.21   0.01    -9.5886  random             0.1s
+    3       -37.1       -65.8    0.4847   0.21   0.01    -6.0707  random             0.1s
+    4       -34.9       -67.2    0.4814   0.22   0.01   -11.8757  random             0.1s
+  [probe] gen=5 score=-348.1 net=-0.100 fell=1.000 [new best earth]
+    5       -39.1       -72.9    0.4783   0.22   0.01    -8.5676  random             0.0s
+    6       -38.3       -73.0    0.4752   0.22   0.01    -8.4710  random             0.0s
+    7       -56.1       -72.9    0.4723   0.23   0.02    -8.2968  random             0.0s
+    8       -64.9       -75.0    0.4695   0.23   0.02    -7.5293  random             0.1s
+    9       -61.3       -74.4    0.4667   0.24   0.02   -11.0056  random             0.0s
+  [plot] Saved fitness curve → experiments/thesis/random_variable_gravity/seed_99/fitness_curve.png
+
+Training complete. Best fitness: -34.9
+Best params → experiments/thesis/random_variable_gravity/seed_99/checkpoints/best_params.npy
+Fitness curve → experiments/thesis/random_variable_gravity/seed_99/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: -348.1)
+Final Earth scorecard | score=-344.1 net=-0.109 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.097 worst_net=-0.105
+  [exp] Wrote experiments/thesis/random_variable_gravity/seed_99/experiment.json
+  [exp] Wrote experiments/thesis/random_variable_gravity/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/random_variable_gravity/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/random_variable_gravity/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/random_variable_gravity/seed_99/summary.json

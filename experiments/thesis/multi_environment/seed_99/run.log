@@ -1,0 +1,37 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : MultiEnvironment  g=[-1.6,-5.0,-9.8]  w=[0.20,0.30,0.50]
+Run context | seed=99 arm=multi_environment run_id=multi_environment_seed_99
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+Checkpoints → experiments/thesis/multi_environment/seed_99/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-472.1 net=-0.747 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis/multi_environment/seed_99/fitness_curve.png
+    0       -67.6       -77.0    0.4958   0.20   0.00    -9.8100  multi(3)           1.4s
+    1       -62.1       -74.5    0.4918   0.20   0.00    -9.8100  multi(3)           0.2s
+    2       -58.2       -75.8    0.4881   0.21   0.01    -9.8100  multi(3)           0.1s
+    3       -41.7       -69.6    0.4846   0.21   0.01    -9.8100  multi(3)           0.1s
+    4       -24.1       -68.6    0.4813   0.22   0.01    -9.8100  multi(3)           0.2s
+  [probe] gen=5 score=-358.3 net=-0.240 fell=1.000 [new best earth]
+    5       -47.0       -74.0    0.4781   0.22   0.01    -9.8100  multi(3)           0.1s
+    6       -67.8       -76.0    0.4750   0.22   0.01    -9.8100  multi(3)           0.1s
+    7       -46.8       -70.4    0.4721   0.23   0.02    -9.8100  multi(3)           0.2s
+    8       -48.1       -70.9    0.4692   0.23   0.02    -9.8100  multi(3)           0.1s
+    9       -48.0       -72.7    0.4665   0.24   0.02    -9.8100  multi(3)           0.1s
+  [plot] Saved fitness curve → experiments/thesis/multi_environment/seed_99/fitness_curve.png
+
+Training complete. Best fitness: -24.1
+Best params → experiments/thesis/multi_environment/seed_99/checkpoints/best_params.npy
+Fitness curve → experiments/thesis/multi_environment/seed_99/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: -358.3)
+Final Earth scorecard | score=-338.7 net=-0.135 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.167 worst_net=-0.206
+  [exp] Wrote experiments/thesis/multi_environment/seed_99/experiment.json
+  [exp] Wrote experiments/thesis/multi_environment/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/multi_environment/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/multi_environment/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/multi_environment/seed_99/summary.json

@@ -1,0 +1,12 @@
+{
+  "score": 984.52,
+  "generation": 160,
+  "policy": "cpg",
+  "curriculum": "archive_based",
+  "gravity": -3.0,
+  "phase": "lv1(a=1)",
+  "label": "gen 160 snapshot",
+  "seed": 4,
+  "arm": "archive_based",
+  "run_id": "archive_based_seed_04"
+}

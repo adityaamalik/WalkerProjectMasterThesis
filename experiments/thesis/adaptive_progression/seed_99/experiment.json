@@ -1,0 +1,31 @@
+{
+  "id": "seed_99",
+  "name": "Curriculum \u2014 AdaptiveProgression  [-1.6\u2192-3.0\u2192-5.0\u2192-7.0\u2192-9.81]  plateau=30gen  min_improve=5.0",
+  "curriculum": "adaptive_progression",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 10,
+  "population": 10,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "AdaptiveProgression  [-1.6\u2192-3.0\u2192-5.0\u2192-7.0\u2192-9.81]  plateau=30gen  min_improve=5.0",
+  "run": {
+    "seed": 99,
+    "arm": "adaptive_progression",
+    "run_id": "adaptive_progression_seed_99"
+  },
+  "result": {
+    "best_score": -61.74,
+    "best_generation": 9,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

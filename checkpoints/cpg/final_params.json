@@ -1,6 +1,9 @@
 {
-  "score": 1596.79,
-  "generation": 499,
+  "score": -50.85,
+  "generation": 0,
   "policy": "cpg",
-  "label": "final (all-time best)"
+  "label": "final (all-time best)",
+  "seed": 123,
+  "arm": "fixed_gravity",
+  "run_id": "smoke_fixed_123"
 }

@@ -1,0 +1,50 @@
+{
+  "run": {
+    "seed": 1,
+    "arm": "curriculum_variable_gravity",
+    "run_id": "curriculum_variable_gravity_seed_01"
+  },
+  "curriculum": "gradual_transition",
+  "gravity_schedule": "GradualTransition  gravity -2.0 \u2192 -9.81  warmup=20%",
+  "population": 40,
+  "sigma0": 0.5,
+  "generations": 500,
+  "best_score": 915.7518135224776,
+  "best_generation": 499,
+  "tte_generation": 510,
+  "tte_censored": true,
+  "tte_thresholds": {
+    "net_progress_m_min": 4.0,
+    "fell_max": 0.2,
+    "backward_distance_m_max": 1.0
+  },
+  "earth_probe": {
+    "every_generations": 10,
+    "episodes": 10,
+    "gravity": -9.81,
+    "records": 50
+  },
+  "seed_stability_target_n": 10,
+  "final_earth": {
+    "score": 405.5040182608499,
+    "net_progress_m": 2.4203446179743318,
+    "fell": 1.0,
+    "backward_distance_m": 0.38296654757212256,
+    "mean_forward_speed_mps": 0.84896305101698
+  },
+  "robustness": {
+    "mean_net_progress_m": 1.9993873883498836,
+    "worst_net_progress_m": 1.5072079176214326,
+    "mean_fall_rate": 1.0
+  },
+  "gravity_sweep": {
+    "gravities": [
+      -6.0,
+      -7.5,
+      -9.81,
+      -11.0,
+      -12.0
+    ],
+    "episodes": 20
+  }
+}

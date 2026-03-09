@@ -1,0 +1,31 @@
+{
+  "id": "seed_05",
+  "name": "Curriculum \u2014 GradualTransition  gravity -2.0 \u2192 -9.81  warmup=20%",
+  "curriculum": "gradual_transition",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "GradualTransition  gravity -2.0 \u2192 -9.81  warmup=20%",
+  "run": {
+    "seed": 5,
+    "arm": "curriculum_variable_gravity",
+    "run_id": "curriculum_variable_gravity_seed_05"
+  },
+  "result": {
+    "best_score": 1664.21,
+    "best_generation": 499,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "score": 249.0,
+  "generation": 80,
+  "policy": "cpg",
+  "label": "gen 80 snapshot",
+  "seed": 9,
+  "arm": "fixed_gravity",
+  "run_id": "fixed_gravity_seed_09"
+}

@@ -1,35 +1,40 @@
 # Thesis Action Plan: Curriculum vs Fixed Gravity Using a Gravity-Agnostic Objective
 
 ## Summary
-This plan will evaluate whether curriculum learning improves learning speed and quality versus fixed-gravity training, without forcing a specific gait style. We will freeze one gravity-agnostic fitness objective, run a 3-arm controlled study, and compare arms on predefined metrics with statistical tests.
+This plan evaluates whether curriculum learning improves learning speed and quality versus fixed-gravity training, without forcing a specific gait style. We freeze one gravity-agnostic fitness objective, run a 3-arm controlled study, and compare arms on predefined metrics with statistical tests.
 
 ## Parameters That Define “Better or Worse”
-1. **Primary metric: Time-to-Earth-Success (TTE)**  
-Earth probe at `g=-9.81` every 10 generations.  
+1. **Primary metric: Time-to-Earth-Success (TTE)**
+Earth probe at `g=-9.81` every 10 generations.
 Success at a probe if all hold over 10 eval episodes:
 - `mean net_progress_m >= 4.0`
 - `mean fell <= 0.20`
-- `mean backward_distance_m <= 1.0`  
+- `mean backward_distance_m <= 1.0`
 TTE = first generation that meets success. If never reached by gen 500, mark as censored (`510`).
 
-2. **Sample-efficiency metric: Earth Learning AUC**  
+2. **Sample-efficiency metric: Earth Learning AUC**
 Area under Earth probe curve (`net_progress_m` vs generation), computed from gen 0..500.
 
-3. **Final-performance metric: Final Earth Scorecard (gen 500)**  
+3. **Final-performance metric: Final Earth Scorecard (gen 500)**
 At Earth gravity, evaluate 20 episodes and report:
 - `mean net_progress_m`
 - `mean fell`
 - `mean forward speed`
 - mean objective score
 
-4. **Robustness metric: Gravity Sweep Scorecard**  
+4. **Robustness metric: Gravity Sweep Scorecard**
 Evaluate final policy on gravity set `{-6.0, -7.5, -9.81, -11.0, -12.0}` for 20 episodes each:
 - mean `net_progress_m` across gravities
 - worst-gravity `net_progress_m`
 - mean fall rate across gravities
 
-5. **Consistency metric: Seed Stability**  
-Across 5 seeds per arm, report median + IQR for TTE and final Earth `net_progress_m`.
+5. **Consistency metric: Seed Stability**
+Across **10 seeds** per arm, report seed-level:
+- median
+- Q1
+- Q3
+- IQR (`Q3 - Q1`)
+for TTE and final Earth `net_progress_m`.
 
 ## Decision Rule for Thesis Claim
 Curriculum is considered better only if all are true:
@@ -39,21 +44,24 @@ Curriculum is considered better only if all are true:
 
 Use bootstrap 95% CIs and Mann-Whitney U for pairwise comparisons (Curriculum vs Fixed, Curriculum vs Random-Variable).
 
+Implementation note:
+- Statistical tests are run on **seed-level aggregates** (not per-episode values).
+
 ## Experiment Design (Locked)
-1. **Arm A: Fixed Earth**  
+1. **Arm A: Fixed Earth**
 Train with constant `g=-9.81`.
 
-2. **Arm B: Random Variable Gravity (no curriculum)**  
+2. **Arm B: Random Variable Gravity (no curriculum)**
 Each generation uses randomly sampled gravity in `[-6.0, -12.0]`.
 
-3. **Arm C: Curriculum Variable Gravity**  
+3. **Arm C: Curriculum Variable Gravity**
 Ordered schedule from easier to harder gravity (same bounds, ending near Earth phase for target task evaluation).
 
-4. **Shared controls**  
+4. **Shared controls**
 - Scratch training only (no warm starts)
 - Same policy architecture (CPG hybrid, 504 params)
 - Same CMA-ES budget: 500 generations, pop 40, sigma fixed per protocol
-- 5 seeds per arm
+- **10 seeds per arm**
 
 ## Fitness Function Plan (Gravity-Agnostic)
 Replace gait-style shaping with task-level locomotion objective in `/Users/adityamalik/Developer/walker2d-evo/evaluate.py`:
@@ -116,6 +124,6 @@ Freeze this objective after one pilot calibration pass and do not retune during 
 ## Assumptions and Defaults Chosen
 1. Primary thesis target is **faster Earth learning**.
 2. Gravity evaluation range is **narrow** (`-6` to `-12`).
-3. Main study uses **5 seeds x 500 generations**.
+3. Main study uses **10 seeds x 500 generations**.
 4. Main comparison uses **3 arms** (Fixed, Random-Variable, Curriculum).
 5. Morphology stays fixed; no co-evolution in this phase.

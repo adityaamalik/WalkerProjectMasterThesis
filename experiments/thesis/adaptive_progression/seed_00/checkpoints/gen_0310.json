@@ -1,0 +1,12 @@
+{
+  "score": 1148.4,
+  "generation": 310,
+  "policy": "cpg",
+  "curriculum": "adaptive_progression",
+  "gravity": -9.81,
+  "phase": "lv4(-9.8)",
+  "label": "gen 310 snapshot",
+  "seed": 0,
+  "arm": "adaptive_progression",
+  "run_id": "adaptive_progression_seed_00"
+}

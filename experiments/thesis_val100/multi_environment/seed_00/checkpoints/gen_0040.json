@@ -1,0 +1,12 @@
+{
+  "score": 189.18,
+  "generation": 40,
+  "policy": "cpg",
+  "curriculum": "multi_environment",
+  "gravity": -9.81,
+  "phase": "multi(3)",
+  "label": "gen 40 snapshot",
+  "seed": 0,
+  "arm": "multi_environment",
+  "run_id": "multi_environment_seed_00"
+}

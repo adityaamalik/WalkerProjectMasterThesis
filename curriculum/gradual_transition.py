@@ -32,7 +32,10 @@ Parameters
 """
 
 
-class GradualTransition:
+from .base import CurriculumBase  # noqa: E402 (placed here to avoid shadowing docstring)
+
+
+class GradualTransition(CurriculumBase):
     """
     Linear gravity curriculum from easy → earth.
 

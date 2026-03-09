@@ -1,0 +1,37 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : AdaptiveProgression  [-1.6→-3.0→-5.0→-7.0→-9.81]  plateau=30gen  min_improve=5.0
+Run context | seed=99 arm=adaptive_progression run_id=adaptive_progression_seed_99
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+Checkpoints → experiments/thesis/adaptive_progression/seed_99/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-379.8 net=-0.221 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis/adaptive_progression/seed_99/fitness_curve.png
+    0       -67.5       -76.7    0.4957   0.20   0.00    -1.6000  lv0(-1.6)          1.3s
+    1       -63.3       -73.7    0.4918   0.20   0.00    -1.6000  lv0(-1.6)          0.1s
+    2       -65.9       -73.5    0.4881   0.21   0.01    -1.6000  lv0(-1.6)          0.0s
+    3       -62.4       -73.6    0.4847   0.21   0.01    -1.6000  lv0(-1.6)          0.0s
+    4       -66.0       -75.0    0.4814   0.22   0.01    -1.6000  lv0(-1.6)          0.0s
+  [probe] gen=5 score=-214.6 net=0.174 fell=1.000 [new best earth]
+    5       -62.8       -78.2    0.4783   0.22   0.01    -1.6000  lv0(-1.6)          0.0s
+    6       -61.7       -76.4    0.4753   0.22   0.01    -1.6000  lv0(-1.6)          0.1s
+    7       -67.5       -84.7    0.4725   0.23   0.02    -1.6000  lv0(-1.6)          0.0s
+    8       -68.4       -74.6    0.4697   0.23   0.02    -1.6000  lv0(-1.6)          0.0s
+    9       -70.5       -78.8    0.4670   0.24   0.02    -1.6000  lv0(-1.6)          0.0s
+  [plot] Saved fitness curve → experiments/thesis/adaptive_progression/seed_99/fitness_curve.png
+
+Training complete. Best fitness: -61.7
+Best params → experiments/thesis/adaptive_progression/seed_99/checkpoints/best_params.npy
+Fitness curve → experiments/thesis/adaptive_progression/seed_99/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: -214.6)
+Final Earth scorecard | score=-319.2 net=-0.121 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.079 worst_net=-0.187
+  [exp] Wrote experiments/thesis/adaptive_progression/seed_99/experiment.json
+  [exp] Wrote experiments/thesis/adaptive_progression/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/adaptive_progression/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/adaptive_progression/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/adaptive_progression/seed_99/summary.json

@@ -1,0 +1,138 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : GradualTransition  gravity -1.6 → -9.81  warmup=20%
+Run context | seed=0 arm=gradual_transition run_id=gradual_transition_seed_00
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=40 | sigma0=0.5 | max_gen=100 | workers=8 | seed=0
+Checkpoints → experiments/thesis_val100/gradual_transition/seed_00/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-388.8 net=-0.143 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+    0       -65.3       -77.8    0.4905   0.20   0.00    -1.6000  warmup             1.5s
+    1       -52.7       -72.8    0.4822   0.20   0.00    -1.6000  warmup             0.2s
+    2       -51.7       -77.1    0.4748   0.21   0.01    -1.6000  warmup             0.1s
+    3       -57.1       -76.5    0.4683   0.21   0.01    -1.6000  warmup             0.2s
+    4       -46.2       -72.3    0.4623   0.22   0.01    -1.6000  warmup             0.2s
+    5       -54.5       -70.8    0.4569   0.22   0.01    -1.6000  warmup             0.2s
+    6       -47.5       -71.6    0.4520   0.22   0.01    -1.6000  warmup             0.2s
+    7       -54.6       -73.2    0.4474   0.23   0.02    -1.6000  warmup             0.2s
+    8       -53.8       -74.3    0.4431   0.23   0.02    -1.6000  warmup             0.2s
+    9       -29.8       -70.3    0.4393   0.24   0.02    -1.6000  warmup             0.3s
+  [probe] gen=10 score=-386.2 net=-0.123 fell=1.000 [new best earth]
+   10         2.5       -67.0    0.4358   0.24   0.03    -1.6000  warmup             0.3s
+   11       -29.1       -74.4    0.4324   0.24   0.03    -1.6000  warmup             0.3s
+   12       -25.0       -69.7    0.4294   0.25   0.03    -1.6000  warmup             0.3s
+   13       -22.5       -71.4    0.4262   0.25   0.03    -1.6000  warmup             0.3s
+   14       -46.9       -80.5    0.4233   0.26   0.04    -1.6000  warmup             0.3s
+   15       -45.9       -77.4    0.4206   0.26   0.04    -1.6000  warmup             0.4s
+   16        19.7       -68.9    0.4181   0.26   0.04    -1.6000  warmup             0.4s
+   17       -28.8       -74.4    0.4159   0.27   0.04    -1.6000  warmup             0.3s
+   18        15.0       -72.4    0.4137   0.27   0.04    -1.6000  warmup             0.4s
+   19       -11.6       -74.7    0.4117   0.28   0.05    -1.6000  warmup             0.4s
+  [probe] gen=20 score=-208.2 net=0.182 fell=1.000 [new best earth]
+   20       143.0       -68.4    0.4101   0.28   0.05    -1.6000  warmup             0.4s
+   21       176.7       -54.6    0.4087   0.28   0.05    -1.7026  ramp 1%            0.6s
+   22       205.6       -31.9    0.4075   0.29   0.06    -1.8053  ramp 2%            0.7s
+   23       220.2        25.8    0.4063   0.29   0.06    -1.9079  ramp 3%            1.0s
+   24       225.3        55.9    0.4052   0.30   0.06    -2.0105  ramp 5%            1.1s
+  [plot] Saved fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+   25       268.7       118.4    0.4041   0.30   0.06    -2.1131  ramp 6%            1.3s
+   26       241.8       125.9    0.4032   0.30   0.07    -2.2157  ramp 7%            1.2s
+   27       272.1       147.7    0.4023   0.31   0.07    -2.3184  ramp 8%            1.2s
+   28       235.1       124.9    0.4013   0.31   0.07    -2.4210  ramp 10%           1.3s
+   29       261.9       125.1    0.4003   0.32   0.07    -2.5236  ramp 11%           1.3s
+  [probe] gen=30 score=46.7 net=1.003 fell=1.000 [new best earth]
+   30       243.0       139.5    0.3994   0.32   0.07    -2.6263  ramp 12%           1.3s
+   31       277.0       125.9    0.3985   0.32   0.08    -2.7289  ramp 13%           1.3s
+   32       260.7       127.2    0.3978   0.33   0.08    -2.8315  ramp 15%           1.3s
+   33       257.1       140.5    0.3973   0.33   0.08    -2.9341  ramp 16%           1.2s
+   34       221.9       124.8    0.3968   0.34   0.09    -3.0368  ramp 17%           1.2s
+   35       206.7       165.2    0.3964   0.34   0.09    -3.1394  ramp 18%           1.1s
+   36       248.3       142.6    0.3961   0.34   0.09    -3.2420  ramp 20%           1.1s
+   37       251.1       151.8    0.3958   0.35   0.09    -3.3446  ramp 21%           1.1s
+   38       278.1       154.6    0.3956   0.35   0.10    -3.4473  ramp 22%           1.1s
+   39       304.8       148.6    0.3953   0.36   0.10    -3.5499  ramp 23%           1.2s
+  [probe] gen=40 score=35.1 net=1.063 fell=1.000
+   40       336.9       154.1    0.3948   0.36   0.10    -3.6525  ramp 25%           1.2s
+   41       305.9       150.5    0.3943   0.36   0.10    -3.7551  ramp 26%           1.4s
+   42       284.9       120.6    0.3938   0.37   0.10    -3.8578  ramp 27%           1.1s
+   43       343.9       162.8    0.3934   0.37   0.11    -3.9604  ramp 28%           1.2s
+   44       299.2       128.5    0.3928   0.38   0.11    -4.0630  ramp 30%           1.0s
+   45       306.8       119.2    0.3922   0.38   0.11    -4.1656  ramp 31%           1.2s
+   46       350.9       111.6    0.3918   0.38   0.12    -4.2683  ramp 32%           1.3s
+   47       349.2       125.2    0.3913   0.39   0.12    -4.3709  ramp 33%           1.5s
+   48       343.0       109.5    0.3909   0.39   0.12    -4.4735  ramp 35%           1.2s
+   49       317.0        65.5    0.3904   0.40   0.12    -4.5761  ramp 36%           1.2s
+  [probe] gen=50 score=-7.6 net=0.778 fell=1.000
+  [plot] Saved fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+   50       346.7       109.7    0.3902   0.40   0.12    -4.6788  ramp 37%           1.1s
+   51       312.7       104.8    0.3898   0.40   0.13    -4.7814  ramp 38%           1.2s
+   52       357.9       134.0    0.3894   0.41   0.13    -4.8840  ramp 40%           1.1s
+   53       415.8       120.1    0.3892   0.41   0.13    -4.9866  ramp 41%           1.2s
+   54       399.4       155.2    0.3890   0.42   0.14    -5.0892  ramp 42%           1.1s
+   55       438.0        55.1    0.3888   0.42   0.14    -5.1919  ramp 43%           1.1s
+   56       354.2       104.4    0.3889   0.42   0.14    -5.2945  ramp 45%           1.1s
+   57       358.1       115.2    0.3887   0.43   0.14    -5.3971  ramp 46%           1.1s
+   58       353.2        79.5    0.3886   0.43   0.14    -5.4998  ramp 47%           1.1s
+   59       394.5        96.1    0.3887   0.44   0.15    -5.6024  ramp 48%           1.1s
+  [probe] gen=60 score=-501.2 net=-0.946 fell=1.000
+   60       354.7       141.1    0.3888   0.44   0.15    -5.7050  ramp 50%           1.1s
+   61       358.9        64.5    0.3889   0.44   0.15    -5.8076  ramp 51%           1.0s
+   62       319.4       124.0    0.3889   0.45   0.15    -5.9103  ramp 52%           1.0s
+   63       335.5       131.8    0.3889   0.45   0.16    -6.0129  ramp 53%           1.0s
+   64       350.1       173.0    0.3889   0.46   0.16    -6.1155  ramp 55%           1.1s
+   65       382.0       105.4    0.3889   0.46   0.16    -6.2181  ramp 56%           1.0s
+   66       368.7       176.3    0.3890   0.46   0.17    -6.3208  ramp 57%           1.0s
+   67       502.8        97.2    0.3890   0.47   0.17    -6.4234  ramp 58%           1.1s
+   68       358.3        77.6    0.3891   0.47   0.17    -6.5260  ramp 60%           1.0s
+   69       344.2       137.1    0.3894   0.48   0.17    -6.6286  ramp 61%           1.0s
+  [probe] gen=70 score=-93.0 net=0.336 fell=1.000
+   70       378.4       128.6    0.3897   0.48   0.17    -6.7313  ramp 62%           1.0s
+   71       342.9       138.3    0.3900   0.48   0.18    -6.8339  ramp 63%           1.1s
+   72       357.1       123.0    0.3904   0.49   0.18    -6.9365  ramp 65%           1.0s
+   73       412.5       146.8    0.3907   0.49   0.18    -7.0391  ramp 66%           1.0s
+   74       365.7       103.4    0.3909   0.50   0.18    -7.1418  ramp 67%           1.0s
+  [plot] Saved fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+   75       370.4        95.1    0.3911   0.50   0.19    -7.2444  ramp 68%           1.1s
+   76       333.4       140.1    0.3913   0.50   0.19    -7.3470  ramp 70%           1.1s
+   77       398.0       196.0    0.3917   0.51   0.19    -7.4496  ramp 71%           1.1s
+   78       369.2       173.6    0.3920   0.51   0.20    -7.5523  ramp 72%           1.1s
+   79       369.5        97.5    0.3923   0.52   0.20    -7.6549  ramp 73%           1.0s
+  [probe] gen=80 score=-289.2 net=-0.441 fell=1.000
+   80       374.1       131.8    0.3925   0.52   0.20    -7.7575  ramp 75%           1.1s
+   81       480.2       167.2    0.3927   0.52   0.20    -7.8601  ramp 76%           1.1s
+   82       381.2       188.8    0.3930   0.53   0.20    -7.9628  ramp 77%           1.1s
+   83       410.7        94.9    0.3934   0.53   0.21    -8.0654  ramp 78%           1.0s
+   84       382.7        98.0    0.3935   0.54   0.21    -8.1680  ramp 80%           1.1s
+   85       322.8       179.7    0.3936   0.54   0.21    -8.2706  ramp 81%           1.3s
+   86       360.9       177.6    0.3936   0.54   0.21    -8.3733  ramp 82%           1.1s
+   87       359.2       122.0    0.3936   0.55   0.22    -8.4759  ramp 83%           1.2s
+   88       380.9       190.1    0.3935   0.55   0.22    -8.5785  ramp 85%           1.1s
+   89       414.6       161.4    0.3933   0.56   0.22    -8.6811  ramp 86%           1.1s
+  [probe] gen=90 score=115.6 net=0.951 fell=1.000 [new best earth]
+   90       454.2       102.1    0.3932   0.56   0.23    -8.7838  ramp 87%           1.0s
+   91       409.8       146.1    0.3930   0.56   0.23    -8.8864  ramp 88%           1.0s
+   92       394.2       164.0    0.3929   0.57   0.23    -8.9890  ramp 90%           1.1s
+   93       379.5       164.9    0.3927   0.57   0.23    -9.0916  ramp 91%           1.1s
+   94       401.3        52.0    0.3926   0.58   0.23    -9.1943  ramp 92%           1.0s
+   95       510.0       167.0    0.3925   0.58   0.24    -9.2969  ramp 93%           1.1s
+   96       441.7       160.2    0.3923   0.58   0.24    -9.3995  ramp 95%           1.1s
+   97       458.0       115.9    0.3921   0.59   0.24    -9.5021  ramp 96%           1.1s
+   98       479.2       141.9    0.3922   0.59   0.24    -9.6048  ramp 97%           1.1s
+   99       349.4       103.3    0.3923   0.60   0.25    -9.7074  ramp 98%           1.3s
+  [plot] Saved fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+
+Training complete. Best fitness: 510.0
+Best params → experiments/thesis_val100/gradual_transition/seed_00/checkpoints/best_params.npy
+Fitness curve → experiments/thesis_val100/gradual_transition/seed_00/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: 115.6)
+Final Earth scorecard | score=-1.9 net=0.387 fell=0.800
+Gravity sweep | gravities=5 mean_net=0.573 worst_net=0.081
+  [exp] Wrote experiments/thesis_val100/gradual_transition/seed_00/experiment.json
+  [exp] Wrote experiments/thesis_val100/gradual_transition/seed_00/training_log.csv
+  [exp] Wrote experiments/thesis_val100/gradual_transition/seed_00/earth_probe.csv
+  [exp] Wrote experiments/thesis_val100/gradual_transition/seed_00/gravity_sweep.csv
+  [exp] Wrote experiments/thesis_val100/gradual_transition/seed_00/summary.json

@@ -1,0 +1,11 @@
+{
+  "score": -214.56,
+  "generation": 5,
+  "policy": "cpg",
+  "curriculum": "adaptive_progression",
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 99,
+  "arm": "adaptive_progression",
+  "run_id": "adaptive_progression_seed_99"
+}

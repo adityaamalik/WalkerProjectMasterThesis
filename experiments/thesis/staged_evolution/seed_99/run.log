@@ -1,0 +1,39 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : StagedEvolution  -1.6 (33%) → -5.0 (33%) → -9.81 (33%)
+Run context | seed=99 arm=staged_evolution run_id=staged_evolution_seed_99
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+Checkpoints → experiments/thesis/staged_evolution/seed_99/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-379.8 net=-0.221 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis/staged_evolution/seed_99/fitness_curve.png
+    0       -67.5       -76.7    0.4957   0.20   0.00    -1.6000  moon               1.3s
+    1       -63.3       -73.7    0.4918   0.20   0.00    -1.6000  moon               0.1s
+    2       -65.9       -73.5    0.4881   0.21   0.01    -1.6000  moon               0.0s
+    3       -62.4       -73.6    0.4847   0.21   0.01    -1.6000  moon               0.0s
+  [stage] gen=4  gravity -5.00 → -5.00  ES restarted  remaining=5
+    4       -65.6       -75.2    0.5000   0.22   0.01    -5.0000  mid                0.0s
+  [probe] gen=5 score=-323.5 net=-0.093 fell=1.000 [new best earth]
+    5       -70.5       -84.9    0.4957   0.22   0.01    -5.0000  mid                0.0s
+    6       -65.0       -80.8    0.4918   0.22   0.01    -5.0000  mid                0.0s
+  [stage] gen=7  gravity -9.81 → -9.81  ES restarted  remaining=2
+    7       -78.1       -83.6    0.5000   0.23   0.02    -9.8100  earth              0.0s
+    8       -26.5       -74.6    0.4957   0.23   0.02    -9.8100  earth              0.0s
+    9       -30.7       -68.6    0.4917   0.24   0.02    -9.8100  earth              0.1s
+  [plot] Saved fitness curve → experiments/thesis/staged_evolution/seed_99/fitness_curve.png
+
+Training complete. Best fitness: -26.5
+Best params → experiments/thesis/staged_evolution/seed_99/checkpoints/best_params.npy
+Fitness curve → experiments/thesis/staged_evolution/seed_99/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: -323.5)
+Final Earth scorecard | score=-321.7 net=-0.083 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.085 worst_net=-0.090
+  [exp] Wrote experiments/thesis/staged_evolution/seed_99/experiment.json
+  [exp] Wrote experiments/thesis/staged_evolution/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/staged_evolution/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/staged_evolution/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/staged_evolution/seed_99/summary.json

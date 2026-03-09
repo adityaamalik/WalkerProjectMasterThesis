@@ -1,0 +1,50 @@
+{
+  "run": {
+    "seed": 5,
+    "arm": "random_variable_gravity",
+    "run_id": "random_variable_gravity_seed_05"
+  },
+  "curriculum": "random_uniform",
+  "gravity_schedule": "RandomUniform  gravity U[-12.0, -6.0]  seed=5",
+  "population": 40,
+  "sigma0": 0.5,
+  "generations": 500,
+  "best_score": 857.9703856064335,
+  "best_generation": 499,
+  "tte_generation": 510,
+  "tte_censored": true,
+  "tte_thresholds": {
+    "net_progress_m_min": 4.0,
+    "fell_max": 0.2,
+    "backward_distance_m_max": 1.0
+  },
+  "earth_probe": {
+    "every_generations": 10,
+    "episodes": 10,
+    "gravity": -9.81,
+    "records": 50
+  },
+  "seed_stability_target_n": 10,
+  "final_earth": {
+    "score": 417.41802696543846,
+    "net_progress_m": 2.7343341742644447,
+    "fell": 1.0,
+    "backward_distance_m": 0.011388386823815396,
+    "mean_forward_speed_mps": 1.120369309425008
+  },
+  "robustness": {
+    "mean_net_progress_m": 2.59772311234063,
+    "worst_net_progress_m": 1.6760057611734704,
+    "mean_fall_rate": 1.0
+  },
+  "gravity_sweep": {
+    "gravities": [
+      -6.0,
+      -7.5,
+      -9.81,
+      -11.0,
+      -12.0
+    ],
+    "episodes": 20
+  }
+}

@@ -1,0 +1,48 @@
+Walker2d-v5 | policy=CPG  params=504
+CPGPolicy  |  total params = 504
+  Joint       Amplitude  Freq(rad/step)   Phase(deg)
+  --------------------------------------------------
+  R-thigh         0.500          0.6931          0.0°
+  R-leg           0.500          0.6931          0.0°
+  R-foot          0.500          0.6931          0.0°
+  L-thigh         0.500          0.6931          0.0°
+  L-leg           0.500          0.6931          0.0°
+  L-foot          0.500          0.6931          0.0°
+
+  Feedback MLP hidden=16  correction_scale=0.5
+Run context | seed=99 arm=fixed_gravity run_id=fixed_gravity_seed_99
+
+Starting from structured scratch prior (no warm-start checkpoint).
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+
+  Gen        Best        Mean     Sigma    Pen   Corr     Time
+------------------------------------------------------------------
+  [probe] gen=0 score=-472.1 net=-0.747 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → fitness_curve_cpg.png
+    0       -64.9       -76.5    0.4958   0.20   0.00     1.5s
+    1       -63.0       -74.5    0.4918   0.20   0.00     0.1s
+    2       -44.7       -80.5    0.4881   0.21   0.01     0.1s
+    3       -48.5       -66.7    0.4846   0.21   0.01     0.1s
+    4        37.0       -62.9    0.4813   0.22   0.01     0.1s
+  [probe] gen=5 score=-443.9 net=-0.660 fell=1.000 [new best earth]
+    5       -53.2       -73.5    0.4782   0.22   0.01     0.0s
+    6       -51.1       -79.7    0.4752   0.22   0.01     0.0s
+    7       -56.0       -74.2    0.4722   0.23   0.02     0.0s
+    8       -51.3       -68.0    0.4695   0.23   0.02     0.0s
+    9       -22.4       -62.4    0.4668   0.24   0.02     0.1s
+CMA-ES stop reasons: {'maxiter': 10}
+  [plot] Saved fitness curve → fitness_curve_cpg.png
+
+Training complete. Best fitness: 37.0
+Best params → experiments/thesis/fixed_gravity/seed_99/working_checkpoints/best_params.npy
+Fitness curve → fitness_curve_cpg.png
+Eval params  → best_earth_params (earth probe score: -443.9)
+Final Earth scorecard | score=-419.5 net=-0.503 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.462 worst_net=-0.672
+  [exp] Archived → experiments/thesis/fixed_gravity/seed_99/
+  [exp] Wrote experiments/thesis/fixed_gravity/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/fixed_gravity/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/fixed_gravity/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/fixed_gravity/seed_99/summary.json

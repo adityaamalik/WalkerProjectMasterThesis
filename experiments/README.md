@@ -167,6 +167,7 @@ python3 train_curriculum.py --curriculum gradual_transition --render \
 | Strategy flag | Description |
 |---|---|
 | `gradual_transition` | Gravity ramps linearly from -2.0 m/s² (easy) → -9.81 m/s² (earth) over training |
+| `random_uniform` | Gravity is sampled each generation from a fixed range (default `[-12.0, -6.0]`) |
 
 ### Results
 
@@ -175,3 +176,43 @@ python3 train_curriculum.py --curriculum gradual_transition --render \
 | [curriculum_gradual_transition](curriculum_gradual_transition/) | Gradual Transition | TBD | 2028.1 | pending |
 
 ---
+
+## Thesis protocol (10 seeds per arm)
+
+The thesis comparison now runs with **10 seeds per arm** (`0..9`) for:
+
+- `fixed_gravity`
+- `random_variable_gravity` (non-curriculum control)
+- `curriculum_variable_gravity`
+
+Standardized output layout:
+
+`experiments/thesis/<arm>/seed_<NN>/`
+
+Each seed directory stores:
+
+- `training_log.csv`
+- `earth_probe.csv`
+- `gravity_sweep.csv`
+- `summary.json`
+
+Batch runner and aggregator:
+
+```bash
+# Run full 3-arm batch (default: 10 seeds)
+python3 scripts/run_thesis_batch.py
+
+# Aggregate across seeds (requires 10 completed seeds/arm by default)
+python3 scripts/aggregate_thesis_results.py
+
+# Recompute probe/sweep metrics from saved checkpoints for one run
+python3 scripts/evaluate_run_metrics.py \
+    --checkpoint-dir experiments/thesis/<arm>/seed_<NN>/checkpoints \
+    --output-dir experiments/thesis/<arm>/seed_<NN>
+```
+
+Aggregation outputs:
+
+- `experiments/thesis/aggregated_metrics.csv`
+- `experiments/thesis/aggregated_summary.json`
+- `experiments/thesis/stats_report.md`

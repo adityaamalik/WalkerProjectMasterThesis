@@ -1,0 +1,11 @@
+{
+  "score": 1348.24,
+  "generation": 490,
+  "policy": "cpg",
+  "curriculum": "gradual_transition",
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 3,
+  "arm": "gradual_transition",
+  "run_id": "gradual_transition_seed_03"
+}

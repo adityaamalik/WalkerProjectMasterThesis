@@ -1,0 +1,9 @@
+{
+  "score": 352.31,
+  "generation": 99,
+  "policy": "cpg",
+  "label": "final (all-time best)",
+  "seed": 0,
+  "arm": "fixed_gravity",
+  "run_id": "fixed_gravity_seed_00"
+}

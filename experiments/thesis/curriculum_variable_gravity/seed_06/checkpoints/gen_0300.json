@@ -1,0 +1,12 @@
+{
+  "score": 1642.0,
+  "generation": 300,
+  "policy": "cpg",
+  "curriculum": "gradual_transition",
+  "gravity": -5.905,
+  "phase": "ramp 50%",
+  "label": "gen 300 snapshot",
+  "seed": 6,
+  "arm": "curriculum_variable_gravity",
+  "run_id": "curriculum_variable_gravity_seed_06"
+}

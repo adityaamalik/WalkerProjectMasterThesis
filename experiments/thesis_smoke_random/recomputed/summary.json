@@ -1,0 +1,25 @@
+{
+  "seed": 123,
+  "best_score": -335.4996810260442,
+  "best_generation": 0,
+  "tte_generation": 10,
+  "tte_censored": true,
+  "tte_thresholds": {
+    "net_progress_m_min": 4.0,
+    "fell_max": 0.2,
+    "backward_distance_m_max": 1.0
+  },
+  "final_earth": {
+    "score": -335.4996810260442,
+    "net_progress_m": -0.1195966921762732,
+    "fell": 1.0,
+    "backward_distance_m": 0.12995896212924363,
+    "mean_forward_speed_mps": 0.028784083202695654
+  },
+  "seed_stability_target_n": 10,
+  "robustness": {
+    "mean_net_progress_m": -0.13057912331706417,
+    "worst_net_progress_m": -0.13057912331706417,
+    "mean_fall_rate": 1.0
+  }
+}

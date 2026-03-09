@@ -1,0 +1,2039 @@
+{
+  "created_at_epoch": 1772229367,
+  "config": {
+    "thesis_root": "experiments/thesis",
+    "arms": [
+      "fixed_gravity",
+      "random_variable_gravity",
+      "curriculum_variable_gravity",
+      "gradual_transition",
+      "staged_evolution",
+      "multi_environment",
+      "adaptive_progression",
+      "archive_based"
+    ],
+    "expected_seeds": 10,
+    "allow_incomplete": true,
+    "metrics": [
+      "tte_generation",
+      "final_net_progress_m",
+      "robustness_mean_net_progress_m",
+      "best_earth_probe_score",
+      "mean_earth_probe_score"
+    ]
+  },
+  "completeness": {
+    "fixed_gravity": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    },
+    "random_variable_gravity": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    },
+    "curriculum_variable_gravity": {
+      "completed_seeds": 10,
+      "expected_seeds": 10
+    },
+    "gradual_transition": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    },
+    "staged_evolution": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    },
+    "multi_environment": {
+      "completed_seeds": 1,
+      "expected_seeds": 10
+    },
+    "adaptive_progression": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    },
+    "archive_based": {
+      "completed_seeds": 11,
+      "expected_seeds": 10
+    }
+  },
+  "arm_stats": {
+    "fixed_gravity": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 330.0,
+        "q1": 275.0,
+        "q3": 470.0,
+        "iqr": 195.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 4.866877968278701,
+        "q1": 2.647937259811934,
+        "q3": 6.042170950461701,
+        "iqr": 3.394233690649767
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 3.2421939404401456,
+        "q1": 1.804670357038205,
+        "q3": 4.929284888513318,
+        "iqr": 3.124614531475113
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 1188.0865326936846,
+        "q1": 811.5265762207165,
+        "q3": 1384.6784632003778,
+        "iqr": 573.1518869796613
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 537.5114785170817,
+        "q1": 368.79212885557604,
+        "q3": 643.9908700743938,
+        "iqr": 275.19874121881776
+      }
+    },
+    "random_variable_gravity": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 470.0,
+        "q1": 390.0,
+        "q3": 510.0,
+        "iqr": 120.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 2.7343341742644447,
+        "q1": 2.218938518068831,
+        "q3": 4.098769023500755,
+        "iqr": 1.879830505431924
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 3.5440186718201674,
+        "q1": 3.0150508688791633,
+        "q3": 5.332262945756481,
+        "iqr": 2.317212076877318
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 1188.840586724223,
+        "q1": 815.2783760354952,
+        "q3": 1475.094566954585,
+        "iqr": 659.8161909190898
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 466.4680966032493,
+        "q1": 318.037586608796,
+        "q3": 495.0392682556346,
+        "iqr": 177.00168164683862
+      }
+    },
+    "curriculum_variable_gravity": {
+      "tte_generation": {
+        "n_used": 10,
+        "median": 500.0,
+        "q1": 470.0,
+        "q3": 510.0,
+        "iqr": 40.0
+      },
+      "final_net_progress_m": {
+        "n_used": 10,
+        "median": 1.8988493153639396,
+        "q1": 1.7193413788881489,
+        "q3": 2.478236378458101,
+        "iqr": 0.7588949995699523
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 10,
+        "median": 2.3690124575015274,
+        "q1": 1.7455081690125338,
+        "q3": 4.78123326468444,
+        "iqr": 3.035725095671906
+      },
+      "best_earth_probe_score": {
+        "n_used": 10,
+        "median": 1235.1676527080485,
+        "q1": 569.6506629224307,
+        "q3": 1553.5014285674824,
+        "iqr": 983.8507656450518
+      },
+      "mean_earth_probe_score": {
+        "n_used": 10,
+        "median": 227.05306369916877,
+        "q1": 89.39930576277577,
+        "q3": 286.30822192536033,
+        "iqr": 196.90891616258455
+      }
+    },
+    "gradual_transition": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 480.0,
+        "q1": 450.0,
+        "q3": 500.0,
+        "iqr": 50.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 6.327161544024872,
+        "q1": 4.524142798642133,
+        "q3": 7.713694352772006,
+        "iqr": 3.1895515541298725
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 4.655844531969071,
+        "q1": 2.83743637554874,
+        "q3": 5.369059583293856,
+        "iqr": 2.531623207745116
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 1348.2379927697903,
+        "q1": 1040.807958266532,
+        "q3": 1628.6937161380984,
+        "iqr": 587.8857578715663
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 218.62809185468453,
+        "q1": 115.98106698817134,
+        "q3": 333.8991918237232,
+        "iqr": 217.91812483555185
+      }
+    },
+    "staged_evolution": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 510.0,
+        "q1": 395.0,
+        "q3": 510.0,
+        "iqr": 115.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 3.8616093274974714,
+        "q1": 2.4742627940674136,
+        "q3": 7.387550858433662,
+        "iqr": 4.913288064366249
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 2.3020723613546377,
+        "q1": 1.1290375047552959,
+        "q3": 6.380664846155824,
+        "iqr": 5.251627341400528
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 891.8627760229099,
+        "q1": 564.0758414019915,
+        "q3": 1621.0797063141677,
+        "iqr": 1057.0038649121761
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 263.42125914869007,
+        "q1": 120.31458965337009,
+        "q3": 399.0727240999487,
+        "iqr": 278.7581344465786
+      }
+    },
+    "multi_environment": {
+      "tte_generation": {
+        "n_used": 1,
+        "median": 20.0,
+        "q1": 20.0,
+        "q3": 20.0,
+        "iqr": 0.0
+      },
+      "final_net_progress_m": {
+        "n_used": 1,
+        "median": -0.13549923552009127,
+        "q1": -0.13549923552009127,
+        "q3": -0.13549923552009127,
+        "iqr": 0.0
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 1,
+        "median": -0.166888893808446,
+        "q1": -0.166888893808446,
+        "q3": -0.166888893808446,
+        "iqr": 0.0
+      },
+      "best_earth_probe_score": {
+        "n_used": 1,
+        "median": -358.2966118884369,
+        "q1": -358.2966118884369,
+        "q3": -358.2966118884369,
+        "iqr": 0.0
+      },
+      "mean_earth_probe_score": {
+        "n_used": 1,
+        "median": -415.18229677991087,
+        "q1": -415.18229677991087,
+        "q3": -415.18229677991087,
+        "iqr": 0.0
+      }
+    },
+    "adaptive_progression": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 450.0,
+        "q1": 325.0,
+        "q3": 510.0,
+        "iqr": 185.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 5.98556739164971,
+        "q1": 3.142477898140958,
+        "q3": 7.387002170391231,
+        "iqr": 4.244524272250272
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 3.4287766651582365,
+        "q1": 1.9597314378383048,
+        "q3": 5.869625182479889,
+        "iqr": 3.9098937446415842
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 1263.8789943315062,
+        "q1": 764.4191369423359,
+        "q3": 1570.42991833512,
+        "iqr": 806.0107813927841
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 270.02158944746856,
+        "q1": 188.33163691904804,
+        "q3": 445.61193288361454,
+        "iqr": 257.2802959645665
+      }
+    },
+    "archive_based": {
+      "tte_generation": {
+        "n_used": 11,
+        "median": 390.0,
+        "q1": 330.0,
+        "q3": 510.0,
+        "iqr": 180.0
+      },
+      "final_net_progress_m": {
+        "n_used": 11,
+        "median": 6.127132044991879,
+        "q1": 2.7071151119791645,
+        "q3": 7.684149113897855,
+        "iqr": 4.977034001918691
+      },
+      "robustness_mean_net_progress_m": {
+        "n_used": 11,
+        "median": 4.548761887939032,
+        "q1": 1.729868548050086,
+        "q3": 6.5261760244873575,
+        "iqr": 4.7963074764372715
+      },
+      "best_earth_probe_score": {
+        "n_used": 11,
+        "median": 1299.2476172119964,
+        "q1": 662.1787197206855,
+        "q3": 1708.0116757751505,
+        "iqr": 1045.8329560544648
+      },
+      "mean_earth_probe_score": {
+        "n_used": 11,
+        "median": 341.9715486426418,
+        "q1": 158.12219792793147,
+        "q3": 497.21699112274524,
+        "iqr": 339.09479319481375
+      }
+    }
+  },
+  "pairwise_tests": [
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "random_variable_gravity",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 41.0,
+      "p_value": 0.20086967329897165,
+      "effect_size_r": 0.2729966330622882,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 24.0,
+      "p_value": 0.02708092033647327,
+      "effect_size_r": 0.47635967084698216,
+      "method": "scipy",
+      "p_adj": 0.5494867106456793
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 36.5,
+      "p_value": 0.11866430105533676,
+      "effect_size_r": 0.3359958560766624,
+      "method": "scipy",
+      "p_adj": 0.6229875805405181
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 34.5,
+      "p_value": 0.07849810152081133,
+      "effect_size_r": 0.36399551074971764,
+      "method": "scipy",
+      "p_adj": 0.5494867106456793
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 44.0,
+      "p_value": 0.28128468959777175,
+      "effect_size_r": 0.2309971510527054,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "fixed_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 47.5,
+      "p_value": 0.40325983195743986,
+      "effect_size_r": 0.18199775537485882,
+      "method": "scipy",
+      "p_adj": 0.7066566450353349
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 44.5,
+      "p_value": 0.4553102060078148,
+      "effect_size_r": 0.16134763044817138,
+      "method": "scipy",
+      "p_adj": 0.7121455604781753
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 60.0,
+      "p_value": 1.0,
+      "effect_size_r": 0.0069999136682638,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 52.0,
+      "p_value": 0.5659223474385784,
+      "effect_size_r": 0.1189985323604846,
+      "method": "scipy",
+      "p_adj": 0.7427730810131341
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 64.0,
+      "p_value": 0.8360128260564152,
+      "effect_size_r": 0.048999395677846606,
+      "method": "scipy",
+      "p_adj": 0.9361908123237497
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 71.5,
+      "p_value": 0.47476370698545023,
+      "effect_size_r": 0.15399810070180361,
+      "method": "scipy",
+      "p_adj": 0.7121455604781753
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 67.0,
+      "p_value": 0.4038037971630485,
+      "effect_size_r": 0.18439729194076726,
+      "method": "scipy",
+      "p_adj": 0.7066566450353349
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 57.5,
+      "p_value": 0.875927321066446,
+      "effect_size_r": 0.038416102487659844,
+      "method": "scipy",
+      "p_adj": 0.9361908123237497
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 10,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 70.5,
+      "p_value": 0.2634577214652727,
+      "effect_size_r": 0.23817983542349108,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 80.0,
+      "p_value": 0.07218909186601657,
+      "effect_size_r": 0.3841610248765985,
+      "method": "scipy",
+      "p_adj": 0.5494867106456793
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "gradual_transition",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 51.0,
+      "p_value": 0.5344797062559374,
+      "effect_size_r": 0.1329983596970122,
+      "method": "scipy",
+      "p_adj": 0.7427730810131341
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "gradual_transition",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "gradual_transition",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 66.0,
+      "p_value": 0.7363435632198481,
+      "effect_size_r": 0.07699905035090181,
+      "method": "scipy",
+      "p_adj": 0.9096008722127535
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "gradual_transition",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 76.5,
+      "p_value": 0.30043558816934146,
+      "effect_size_r": 0.2239972373844416,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "staged_evolution",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "staged_evolution",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 75.0,
+      "p_value": 0.31524414815863033,
+      "effect_size_r": 0.20299749637965023,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "staged_evolution",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 80.5,
+      "p_value": 0.17067490021577048,
+      "effect_size_r": 0.279996546730552,
+      "method": "scipy",
+      "p_adj": 0.6620127111331238
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "multi_environment",
+      "arm_b": "adaptive_progression",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "multi_environment",
+      "arm_b": "archive_based",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "tte_generation",
+      "arm_a": "adaptive_progression",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 63.0,
+      "p_value": 0.8916102974511901,
+      "effect_size_r": 0.034999568341319,
+      "method": "scipy",
+      "p_adj": 0.9361908123237497
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "random_variable_gravity",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 82.0,
+      "p_value": 0.16790547565263503,
+      "effect_size_r": 0.3009962877353434,
+      "method": "scipy",
+      "p_adj": 0.39177944318948177
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 78.0,
+      "p_value": 0.11310220386717555,
+      "effect_size_r": 0.3534281428864706,
+      "method": "scipy",
+      "p_adj": 0.33930661160152664
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 44.0,
+      "p_value": 0.2934238832742103,
+      "effect_size_r": 0.2309971510527054,
+      "method": "scipy",
+      "p_adj": 0.560172868068947
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 60.0,
+      "p_value": 1.0,
+      "effect_size_r": 0.0069999136682638,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 53.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 0.8567856390767571
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 49.0,
+      "p_value": 0.4701007598741287,
+      "effect_size_r": 0.1609980143700674,
+      "method": "scipy",
+      "p_adj": 0.705151139811193
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 69.0,
+      "p_value": 0.34178646181502725,
+      "effect_size_r": 0.21513017393089515,
+      "method": "scipy",
+      "p_adj": 0.5981263081762977
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 23.0,
+      "p_value": 0.01511526935649349,
+      "effect_size_r": 0.524993525119785,
+      "method": "scipy",
+      "p_adj": 0.12827015426061888
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 41.0,
+      "p_value": 0.21216467995625798,
+      "effect_size_r": 0.2729966330622882,
+      "method": "scipy",
+      "p_adj": 0.4455458279081418
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 32.0,
+      "p_value": 0.06597105309665711,
+      "effect_size_r": 0.39899507909103665,
+      "method": "scipy",
+      "p_adj": 0.2308986858382999
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 32.0,
+      "p_value": 0.06597105309665711,
+      "effect_size_r": 0.39899507909103665,
+      "method": "scipy",
+      "p_adj": 0.2308986858382999
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 21.0,
+      "p_value": 0.018324307751516982,
+      "effect_size_r": 0.5224589938321739,
+      "method": "scipy",
+      "p_adj": 0.12827015426061888
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 34.0,
+      "p_value": 0.14886094830032745,
+      "effect_size_r": 0.32269526089634276,
+      "method": "scipy",
+      "p_adj": 0.39075998928835953
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 10,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 21.0,
+      "p_value": 0.018324307751516982,
+      "effect_size_r": 0.5224589938321739,
+      "method": "scipy",
+      "p_adj": 0.12827015426061888
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 23.0,
+      "p_value": 0.02654370762772395,
+      "effect_size_r": 0.49172611184204607,
+      "method": "scipy",
+      "p_adj": 0.13935446504555074
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 73.0,
+      "p_value": 0.430708328947102,
+      "effect_size_r": 0.174997841706595,
+      "method": "scipy",
+      "p_adj": 0.6957596082991647
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 67.0,
+      "p_value": 0.6935883744907081,
+      "effect_size_r": 0.09099887768742941,
+      "method": "scipy",
+      "p_adj": 0.8567856390767571
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 63.0,
+      "p_value": 0.8955142436987509,
+      "effect_size_r": 0.034999568341319,
+      "method": "scipy",
+      "p_adj": 0.9675909120173807
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 54.0,
+      "p_value": 0.6935883744907081,
+      "effect_size_r": 0.09099887768742941,
+      "method": "scipy",
+      "p_adj": 0.8567856390767571
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 55.0,
+      "p_value": 0.7426659029196823,
+      "effect_size_r": 0.07699905035090181,
+      "method": "scipy",
+      "p_adj": 0.866443553406296
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "multi_environment",
+      "arm_b": "adaptive_progression",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "multi_environment",
+      "arm_b": "archive_based",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "final_net_progress_m",
+      "arm_a": "adaptive_progression",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 58.5,
+      "p_value": 0.9215151543022673,
+      "effect_size_r": 0.0279996546730552,
+      "method": "scipy",
+      "p_adj": 0.9675909120173807
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "random_variable_gravity",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 54.0,
+      "p_value": 0.6935883744907081,
+      "effect_size_r": 0.09099887768742941,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 60.0,
+      "p_value": 0.7513343125576336,
+      "effect_size_r": 0.07683220497531969,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 49.0,
+      "p_value": 0.4701007598741287,
+      "effect_size_r": 0.1609980143700674,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 60.0,
+      "p_value": 1.0,
+      "effect_size_r": 0.0069999136682638,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 56.0,
+      "p_value": 0.792812616632073,
+      "effect_size_r": 0.0629992230143742,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "fixed_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 52.0,
+      "p_value": 0.5993606964290359,
+      "effect_size_r": 0.1189985323604846,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 67.0,
+      "p_value": 0.4180519085356006,
+      "effect_size_r": 0.18439729194076726,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 54.0,
+      "p_value": 0.6935883744907081,
+      "effect_size_r": 0.09099887768742941,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 59.0,
+      "p_value": 0.9476445296225945,
+      "effect_size_r": 0.0209997410047914,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 64.0,
+      "p_value": 0.8438314252467704,
+      "effect_size_r": 0.048999395677846606,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 56.0,
+      "p_value": 0.792812616632073,
+      "effect_size_r": 0.0629992230143742,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 40.0,
+      "p_value": 0.3072263700681952,
+      "effect_size_r": 0.2304966149259591,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 55.0,
+      "p_value": 1.0,
+      "effect_size_r": 0.0,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 10,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 45.0,
+      "p_value": 0.5035147104262714,
+      "effect_size_r": 0.15366440995063937,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 45.0,
+      "p_value": 0.5035147104262714,
+      "effect_size_r": 0.15366440995063937,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 68.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 72.0,
+      "p_value": 0.4701007598741287,
+      "effect_size_r": 0.1609980143700674,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "gradual_transition",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 63.0,
+      "p_value": 0.8955142436987509,
+      "effect_size_r": 0.034999568341319,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 51.0,
+      "p_value": 0.5545304064894243,
+      "effect_size_r": 0.1329983596970122,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "staged_evolution",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 50.0,
+      "p_value": 0.5114059218501164,
+      "effect_size_r": 0.1469981870335398,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "multi_environment",
+      "arm_b": "adaptive_progression",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "multi_environment",
+      "arm_b": "archive_based",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "robustness_mean_net_progress_m",
+      "arm_a": "adaptive_progression",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 56.5,
+      "p_value": 0.8181753420241968,
+      "effect_size_r": 0.0559993093461104,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "random_variable_gravity",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 60.0,
+      "p_value": 1.0,
+      "effect_size_r": 0.0069999136682638,
+      "method": "scipy",
+      "p_adj": 1.0
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 50.0,
+      "p_value": 0.7513343125576336,
+      "effect_size_r": 0.07683220497531969,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 49.0,
+      "p_value": 0.4701007598741287,
+      "effect_size_r": 0.1609980143700674,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 64.0,
+      "p_value": 0.8438314252467704,
+      "effect_size_r": 0.048999395677846606,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 57.0,
+      "p_value": 0.8438314252467704,
+      "effect_size_r": 0.048999395677846606,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 55.0,
+      "p_value": 0.7426659029196823,
+      "effect_size_r": 0.07699905035090181,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 51.0,
+      "p_value": 0.8053241706182483,
+      "effect_size_r": 0.06146576398025576,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 53.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 62.0,
+      "p_value": 0.9476445296225945,
+      "effect_size_r": 0.0209997410047914,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 53.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 53.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 50.0,
+      "p_value": 0.7513343125576336,
+      "effect_size_r": 0.07683220497531969,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 60.0,
+      "p_value": 0.7513343125576336,
+      "effect_size_r": 0.07683220497531969,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 10,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 52.0,
+      "p_value": 0.8602588271965479,
+      "effect_size_r": 0.046099322985191815,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 51.0,
+      "p_value": 0.8053241706182483,
+      "effect_size_r": 0.06146576398025576,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 71.0,
+      "p_value": 0.5114059218501164,
+      "effect_size_r": 0.1469981870335398,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 65.0,
+      "p_value": 0.792812616632073,
+      "effect_size_r": 0.0629992230143742,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 63.0,
+      "p_value": 0.8955142436987509,
+      "effect_size_r": 0.034999568341319,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 53.0,
+      "p_value": 0.6457638203049723,
+      "effect_size_r": 0.10499870502395701,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 55.0,
+      "p_value": 0.7426659029196823,
+      "effect_size_r": 0.07699905035090181,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "multi_environment",
+      "arm_b": "adaptive_progression",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "multi_environment",
+      "arm_b": "archive_based",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "best_earth_probe_score",
+      "arm_a": "adaptive_progression",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 58.5,
+      "p_value": 0.9215151543022673,
+      "effect_size_r": 0.0279996546730552,
+      "method": "scipy",
+      "p_adj": 0.9950267561037243
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "random_variable_gravity",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 74.0,
+      "p_value": 0.39330163935061535,
+      "effect_size_r": 0.18899766904312262,
+      "method": "scipy",
+      "p_adj": 0.6353334174125325
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 94.0,
+      "p_value": 0.006706275607805576,
+      "effect_size_r": 0.5992911988074936,
+      "method": "scipy",
+      "p_adj": 0.1408317877639171
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 97.0,
+      "p_value": 0.018081721820705336,
+      "effect_size_r": 0.5109936977832574,
+      "method": "scipy",
+      "p_adj": 0.15472593440893675
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 92.0,
+      "p_value": 0.04178899680298453,
+      "effect_size_r": 0.44099456110061946,
+      "method": "scipy",
+      "p_adj": 0.21939223321566878
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 86.0,
+      "p_value": 0.10066768749863966,
+      "effect_size_r": 0.35699559708145384,
+      "method": "scipy",
+      "p_adj": 0.35233690624523883
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "fixed_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 83.0,
+      "p_value": 0.14856177489186861,
+      "effect_size_r": 0.314996115071871,
+      "method": "scipy",
+      "p_adj": 0.44568532467560584
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "curriculum_variable_gravity",
+      "n_a": 11,
+      "n_b": 10,
+      "u": 88.0,
+      "p_value": 0.022103704915562395,
+      "effect_size_r": 0.50709255283711,
+      "method": "scipy",
+      "p_adj": 0.15472593440893675
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 87.0,
+      "p_value": 0.0877681118303241,
+      "effect_size_r": 0.37099542441798145,
+      "method": "scipy",
+      "p_adj": 0.35233690624523883
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 78.0,
+      "p_value": 0.26429152373398135,
+      "effect_size_r": 0.244996978389233,
+      "method": "scipy",
+      "p_adj": 0.5865230701301909
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 77.0,
+      "p_value": 0.2934238832742103,
+      "effect_size_r": 0.2309971510527054,
+      "method": "scipy",
+      "p_adj": 0.5865230701301909
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "random_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 72.0,
+      "p_value": 0.4701007598741287,
+      "effect_size_r": 0.1609980143700674,
+      "method": "scipy",
+      "p_adj": 0.6581410638237801
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "gradual_transition",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 49.0,
+      "p_value": 0.6985353583033387,
+      "effect_size_r": 0.09219864597038363,
+      "method": "scipy",
+      "p_adj": 0.7720653960194797
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "staged_evolution",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 48.0,
+      "p_value": 0.6471563379312674,
+      "effect_size_r": 0.10756508696544757,
+      "method": "scipy",
+      "p_adj": 0.7550157275864786
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "multi_environment",
+      "n_a": 10,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "adaptive_progression",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 40.0,
+      "p_value": 0.3072263700681952,
+      "effect_size_r": 0.2304966149259591,
+      "method": "scipy",
+      "p_adj": 0.5865230701301909
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "curriculum_variable_gravity",
+      "arm_b": "archive_based",
+      "n_a": 10,
+      "n_b": 11,
+      "u": 38.0,
+      "p_value": 0.2452781168067728,
+      "effect_size_r": 0.26122949691608693,
+      "method": "scipy",
+      "p_adj": 0.5865230701301909
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "staged_evolution",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 59.0,
+      "p_value": 0.9476445296225945,
+      "effect_size_r": 0.0209997410047914,
+      "method": "scipy",
+      "p_adj": 0.9476445296225945
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 50.0,
+      "p_value": 0.5114059218501164,
+      "effect_size_r": 0.1469981870335398,
+      "method": "scipy",
+      "p_adj": 0.6712202724282778
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "gradual_transition",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 47.0,
+      "p_value": 0.39330163935061535,
+      "effect_size_r": 0.18899766904312262,
+      "method": "scipy",
+      "p_adj": 0.6353334174125325
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "multi_environment",
+      "n_a": 11,
+      "n_b": 1,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "adaptive_progression",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 51.0,
+      "p_value": 0.5545304064894243,
+      "effect_size_r": 0.1329983596970122,
+      "method": "scipy",
+      "p_adj": 0.6850081491928183
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "staged_evolution",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 48.0,
+      "p_value": 0.430708328947102,
+      "effect_size_r": 0.174997841706595,
+      "method": "scipy",
+      "p_adj": 0.6460624934206529
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "multi_environment",
+      "arm_b": "adaptive_progression",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "multi_environment",
+      "arm_b": "archive_based",
+      "n_a": 1,
+      "n_b": 11,
+      "u": null,
+      "p_value": null,
+      "effect_size_r": null,
+      "method": "insufficient_data",
+      "p_adj": null
+    },
+    {
+      "metric": "mean_earth_probe_score",
+      "arm_a": "adaptive_progression",
+      "arm_b": "archive_based",
+      "n_a": 11,
+      "n_b": 11,
+      "u": 57.5,
+      "p_value": 0.8695666997640787,
+      "effect_size_r": 0.0419994820095828,
+      "method": "scipy",
+      "p_adj": 0.9130450347522827
+    }
+  ]
+}

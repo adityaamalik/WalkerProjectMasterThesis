@@ -1,0 +1,37 @@
+Walker2d-v5 | policy=CPG  params=504
+Curriculum   : GradualTransition  gravity -1.6 → -9.81  warmup=20%
+Run context | seed=99 arm=gradual_transition run_id=gradual_transition_seed_99
+
+Schedule | penalty_min=0.20 penalty_ramp_gen=200 corr_min=0.00 corr_max=0.50 corr_ramp_gen=200
+
+Starting CMA-ES | pop=10 | sigma0=0.5 | max_gen=10 | workers=8 | seed=99
+Checkpoints → experiments/thesis/gradual_transition/seed_99/checkpoints/
+
+  Gen        Best        Mean     Sigma    Pen   Corr    Gravity  Phase              Time
+------------------------------------------------------------------------------------
+  [probe] gen=0 score=-379.8 net=-0.221 fell=1.000 [new best earth]
+  [plot] Saved fitness curve → experiments/thesis/gradual_transition/seed_99/fitness_curve.png
+    0       -67.5       -76.7    0.4957   0.20   0.00    -1.6000  warmup             1.3s
+    1       -63.3       -73.7    0.4918   0.20   0.00    -1.6000  warmup             0.1s
+    2       -65.9       -73.5    0.4881   0.21   0.01    -1.6000  warmup             0.0s
+    3       -62.6       -72.9    0.4846   0.21   0.01    -2.6263  ramp 12%           0.0s
+    4       -65.9       -79.2    0.4813   0.22   0.01    -3.6525  ramp 25%           0.1s
+  [probe] gen=5 score=-337.0 net=-0.189 fell=1.000 [new best earth]
+    5       -64.0       -77.9    0.4782   0.22   0.01    -4.6788  ramp 37%           0.0s
+    6       -59.7       -74.3    0.4752   0.22   0.01    -5.7050  ramp 50%           0.0s
+    7       -62.7       -83.6    0.4723   0.23   0.02    -6.7313  ramp 62%           0.1s
+    8       -61.4       -70.3    0.4695   0.23   0.02    -7.7575  ramp 75%           0.0s
+    9       -62.3       -80.0    0.4668   0.24   0.02    -8.7838  ramp 87%           0.1s
+  [plot] Saved fitness curve → experiments/thesis/gradual_transition/seed_99/fitness_curve.png
+
+Training complete. Best fitness: -59.7
+Best params → experiments/thesis/gradual_transition/seed_99/checkpoints/best_params.npy
+Fitness curve → experiments/thesis/gradual_transition/seed_99/fitness_curve.png
+Eval params  → best_earth_params (earth probe score: -337.0)
+Final Earth scorecard | score=-305.2 net=-0.074 fell=1.000
+Gravity sweep | gravities=5 mean_net=-0.156 worst_net=-0.185
+  [exp] Wrote experiments/thesis/gradual_transition/seed_99/experiment.json
+  [exp] Wrote experiments/thesis/gradual_transition/seed_99/training_log.csv
+  [exp] Wrote experiments/thesis/gradual_transition/seed_99/earth_probe.csv
+  [exp] Wrote experiments/thesis/gradual_transition/seed_99/gravity_sweep.csv
+  [exp] Wrote experiments/thesis/gradual_transition/seed_99/summary.json

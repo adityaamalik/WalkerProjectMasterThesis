@@ -1,0 +1,9 @@
+{
+  "score": -68.03,
+  "generation": 0,
+  "policy": "cpg",
+  "label": "final (all-time best)",
+  "seed": 7,
+  "arm": "fixed_gravity",
+  "run_id": "smoke2_fixed"
+}

@@ -1,0 +1,12 @@
+{
+  "score": 270.22,
+  "generation": 90,
+  "policy": "cpg",
+  "curriculum": "staged_evolution",
+  "gravity": -9.81,
+  "phase": "earth",
+  "label": "gen 90 snapshot",
+  "seed": 0,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_00"
+}

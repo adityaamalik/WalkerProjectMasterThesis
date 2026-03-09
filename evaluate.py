@@ -12,28 +12,31 @@ import mujoco
 from cpg_policy import CPGPolicy
 
 # ---------------------------------------------------------------------------
-# Fitness design (dense, anti-hop, walking-oriented)
+# Fitness design (thesis mode: gravity-agnostic locomotion objective)
 # ---------------------------------------------------------------------------
-W_DISTANCE          =  55.0    # forward distance reward (metres)
-W_NET_PROGRESS      =  90.0    # reward for net forward displacement
-W_SPEED_TRACK       =   0.4    # reward for staying near target walking speed
+W_DISTANCE          =  55.0    # forward-only distance reward
+W_NET_PROGRESS      =  95.0    # reward for net forward displacement
+W_SPEED_TRACK       =   0.4    # reward for staying near target speed
 W_UPRIGHT           =   0.20   # torso stays upright
-W_ALTERNATION       =   5.0    # valid left↔right stride switches
-W_OVERTAKE          =  18.0    # reward true foot-over-foot overtakes (stride quality)
-W_FRONT_TIMER_REWARD = 0.15    # reward per frame while lead-foot timer is still positive
-W_FRONT_TIMER_PENALTY = 0.30   # penalty per frame once lead-foot timer is negative
-W_STEP_LENGTH       = 120.0    # reward for larger forward steps at lead-foot switches
-W_SINGLE_SUPPORT    =   0.05   # reward steps with exactly one stance foot
 W_TIME_ALIVE        =   0.01   # mild survival reward
 
-W_BACKWARD          =  50.0    # penalise backward travel
-W_FLIGHT            =   1.8    # penalise both-feet-airborne steps (hopping signal)
-W_SYM_CONTACT       =   1.0    # penalise highly symmetric bilateral loading
-W_Z_VELOCITY        =   0.18   # penalise vertical COM velocity (bounce)
-W_PITCH_RATE        =   0.08   # penalise torso angular velocity
-W_VEL_CHANGE        =   0.80   # penalise rapid frame-to-frame body velocity changes
-W_JOINT_PENALTY     =   0.01   # penalty for torques above 0.8 threshold
-W_IMPACT_PENALTY    =   0.0015 # penalty for heavy impacts
+# Gait-style shaping terms are disabled for thesis runs to preserve generality
+W_ALTERNATION       =   0.0
+W_OVERTAKE          =   0.0
+W_FRONT_TIMER_REWARD = 0.0
+W_FRONT_TIMER_PENALTY = 0.0
+W_STEP_LENGTH       =   0.0
+W_SINGLE_SUPPORT    =   0.0
+W_FLIGHT            =   0.0
+W_SYM_CONTACT       =   0.0
+
+# Penalties are normalized by episode duration (see weighted_terms()).
+W_BACKWARD          =  55.0    # average backward speed penalty
+W_Z_VELOCITY        =   3.0    # average vertical velocity magnitude penalty
+W_PITCH_RATE        =   2.0    # average pitch-rate magnitude penalty
+W_VEL_CHANGE        =   8.0    # average frame-to-frame velocity change penalty
+W_JOINT_PENALTY     =   0.5    # average torque-limit violation penalty
+W_IMPACT_PENALTY    =   0.006  # average impact penalty
 FALL_PENALTY        = 120.0    # episode terminated by unhealthy state
 MIN_NET_PROGRESS_M  =   2.0    # desired minimum forward displacement per episode
 W_LOW_PROGRESS      =  80.0    # penalty per missing metre below MIN_NET_PROGRESS_M
@@ -149,11 +152,8 @@ class FitnessTracker:
     cumulative_distance : integral of positive x-velocity × DT
     backward_distance   : integral of backward x-velocity × DT
     speed_track_bonus   : Gaussian tracking reward centered at TARGET_SPEED
-    alternation_bonus   : valid stride-filtered left↔right switches
-    overtake_bonus      : valid foot-lead overtakes with minimum lead separation
-    step_length_bonus   : reward for larger forward step lengths
-    flight_penalty      : count of both-feet-airborne steps
-    sym_contact_penalty : bilateral loading symmetry (hopper signature)
+    flight_penalty      : both-feet-airborne count (diagnostic only in thesis mode)
+    sym_contact_penalty : bilateral loading symmetry (diagnostic only in thesis mode)
     fell                : True if episode ended by health termination
     """
 
@@ -358,6 +358,19 @@ class FitnessTracker:
         """Return weighted reward/penalty contributions used in final fitness."""
         net_progress = self.cumulative_distance - self.backward_distance
         low_progress_gap = max(0.0, MIN_NET_PROGRESS_M - net_progress)
+        steps = max(1, self.time_alive)
+        elapsed_s = max(_DT, steps * _DT)
+
+        # Gravity-agnostic normalization: compare average penalties per unit time/step
+        # rather than totals that scale with episode length.
+        backward_speed = self.backward_distance / elapsed_s
+        flight_rate = self.flight_penalty / steps
+        sym_contact_rate = self.sym_contact_penalty / steps
+        z_velocity_mean = self.vertical_velocity_penalty / steps
+        pitch_rate_mean = self.pitch_rate_penalty / steps
+        velocity_change_mean = self.velocity_change_penalty / steps
+        joint_violation_mean = self.joint_violations / steps
+        impact_mean = self.impact_penalty / steps
 
         if self.fell:
             fall_scale = max(0.0, 1.0 - (self.time_alive / max(1, self.max_steps)))
@@ -376,14 +389,14 @@ class FitnessTracker:
             "step_length_reward": self.step_length_bonus * W_STEP_LENGTH,
             "single_support_reward": self._single_support * W_SINGLE_SUPPORT,
             "time_alive_reward": self.time_alive * W_TIME_ALIVE,
-            "backward_penalty": -self.backward_distance * W_BACKWARD * self.penalty_scale,
-            "flight_penalty": -self.flight_penalty * W_FLIGHT * self.penalty_scale,
-            "sym_contact_penalty": -self.sym_contact_penalty * W_SYM_CONTACT * self.penalty_scale,
-            "z_velocity_penalty": -self.vertical_velocity_penalty * W_Z_VELOCITY * self.penalty_scale,
-            "pitch_rate_penalty": -self.pitch_rate_penalty * W_PITCH_RATE * self.penalty_scale,
-            "velocity_change_penalty": -self.velocity_change_penalty * W_VEL_CHANGE * self.penalty_scale,
-            "joint_penalty": -self.joint_violations * W_JOINT_PENALTY * self.penalty_scale,
-            "impact_penalty": -self.impact_penalty * W_IMPACT_PENALTY * self.penalty_scale,
+            "backward_penalty": -backward_speed * W_BACKWARD * self.penalty_scale,
+            "flight_penalty": -flight_rate * W_FLIGHT * self.penalty_scale,
+            "sym_contact_penalty": -sym_contact_rate * W_SYM_CONTACT * self.penalty_scale,
+            "z_velocity_penalty": -z_velocity_mean * W_Z_VELOCITY * self.penalty_scale,
+            "pitch_rate_penalty": -pitch_rate_mean * W_PITCH_RATE * self.penalty_scale,
+            "velocity_change_penalty": -velocity_change_mean * W_VEL_CHANGE * self.penalty_scale,
+            "joint_penalty": -joint_violation_mean * W_JOINT_PENALTY * self.penalty_scale,
+            "impact_penalty": -impact_mean * W_IMPACT_PENALTY * self.penalty_scale,
             "fall_penalty": -fall_pen * self.penalty_scale,
             "low_progress_penalty": -low_progress_gap * W_LOW_PROGRESS * self.penalty_scale,
         }
@@ -394,6 +407,7 @@ class FitnessTracker:
         return {
             "forward_distance_m": self.cumulative_distance,
             "backward_distance_m": self.backward_distance,
+            "backward_speed_mps": self.backward_distance / max(_DT, self.time_alive * _DT),
             "net_progress_m": self.cumulative_distance - self.backward_distance,
             "mean_forward_speed_mps": self.current_velocity,
             "speed_track_accum": self.speed_track_bonus,
@@ -412,10 +426,15 @@ class FitnessTracker:
             "flight_ratio": self._flight_steps / samples,
             "symmetry_accum": self.sym_contact_penalty,
             "vertical_velocity_accum": self.vertical_velocity_penalty,
+            "mean_abs_z_velocity": self.vertical_velocity_penalty / max(1, self.time_alive),
             "pitch_rate_accum": self.pitch_rate_penalty,
+            "mean_abs_pitch_rate": self.pitch_rate_penalty / max(1, self.time_alive),
             "velocity_change_accum": self.velocity_change_penalty,
+            "mean_velocity_change": self.velocity_change_penalty / max(1, self.time_alive),
             "joint_violation_accum": self.joint_violations,
+            "mean_joint_violation": self.joint_violations / max(1, self.time_alive),
             "impact_accum": self.impact_penalty,
+            "mean_impact": self.impact_penalty / max(1, self.time_alive),
             "episode_steps": self.time_alive,
             "fell": float(self.fell),
         }
@@ -425,7 +444,7 @@ class FitnessTracker:
         Compute the final scalar fitness from accumulated statistics.
 
         Dense additive objective:
-        reward forward walking and valid alternation, penalise hopping cues.
+        reward robust forward locomotion and stability across gravities.
         """
         return float(sum(self.weighted_terms().values()))
 
@@ -642,6 +661,7 @@ def evaluate_parallel(
     phase: str = "",
     penalty_scale: float = 1.0,
     correction_scale: float = 0.5,
+    base_seed: int | None = None,
 ) -> list:
     """
     Evaluate every individual in the population.
@@ -654,14 +674,23 @@ def evaluate_parallel(
         Controlled by the curriculum schedule in train_curriculum.py.
     phase : str
         Phase label for HUD / logging (e.g. "warmup", "ramp 42%").
+    base_seed : int | None
+        Optional deterministic seed base for the whole population evaluation.
+        If omitted, preserves legacy behaviour (candidate seeds 0, 10, 20, ...).
     """
-    args_list = [
-        (
-            p, n_episodes, max_steps, i * 10, False, None,
-            gravity, phase, False, penalty_scale, correction_scale
+    args_list = []
+    for i, p in enumerate(population):
+        if base_seed is None:
+            seed = i * 10
+        else:
+            # Keep candidate seed streams disjoint within a generation.
+            seed = int(base_seed) + (i * 1000)
+        args_list.append(
+            (
+                p, n_episodes, max_steps, seed, False, None,
+                gravity, phase, False, penalty_scale, correction_scale
+            )
         )
-        for i, p in enumerate(population)
-    ]
     if pool is not None:
         return pool.starmap(evaluate_policy, args_list)
     return [evaluate_policy(*a) for a in args_list]

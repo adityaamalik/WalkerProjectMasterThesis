@@ -1,0 +1,31 @@
+{
+  "id": "seed_00",
+  "name": "Curriculum \u2014 MultiEnvironment  g=[-1.6,-5.0,-9.8]  w=[0.20,0.30,0.50]",
+  "curriculum": "multi_environment",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 100,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "MultiEnvironment  g=[-1.6,-5.0,-9.8]  w=[0.20,0.30,0.50]",
+  "run": {
+    "seed": 0,
+    "arm": "multi_environment",
+    "run_id": "multi_environment_seed_00"
+  },
+  "result": {
+    "best_score": 643.26,
+    "best_generation": 99,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

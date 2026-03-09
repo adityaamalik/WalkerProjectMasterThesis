@@ -1,0 +1,10 @@
+{
+  "score": 1783.61,
+  "generation": 499,
+  "policy": "cpg",
+  "curriculum": "adaptive_progression",
+  "label": "final (all-time best)",
+  "seed": 1,
+  "arm": "adaptive_progression",
+  "run_id": "adaptive_progression_seed_01"
+}
