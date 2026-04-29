@@ -1,0 +1,13 @@
+{
+  "score": 289.72,
+  "generation": 330,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "random_uniform",
+  "gravity": -7.1329,
+  "phase": "random",
+  "label": "gen 330 snapshot",
+  "seed": 4,
+  "arm": "random_variable_gravity",
+  "run_id": "random_variable_gravity_seed_04"
+}

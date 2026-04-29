@@ -1,0 +1,64 @@
+==========================================================================================
+MORPHOLOGY CONVERGENCE ANALYSIS
+==========================================================================================
+
+1. EVOLVED MORPHOLOGY PER ARM (mean ± std across 10 seeds)
+   Neutral baseline = 1.00x for all parameters
+   Range: (0.5x, 2.0x)
+
+  Arm                                 Torso Mass          Leg Mass        Motor Gear          Friction
+  ----------------------------------------------------------------------------------------------------
+  fixed_gravity                   1.36 ±  0.70    0.76 ±  0.50    0.97 ±  0.65    0.56 ±  0.12
+  random_variable_gravity         1.55 ±  0.58    0.86 ±  0.58    0.92 ±  0.58    0.68 ±  0.20
+  gradual_transition              0.96 ±  0.68    0.57 ±  0.20    1.12 ±  0.52    0.59 ±  0.12
+  staged_evolution                1.12 ±  0.72    0.53 ±  0.03    1.10 ±  0.55    0.74 ±  0.31
+  adaptive_progression            1.35 ±  0.65    0.55 ±  0.06    0.77 ±  0.48    0.84 ±  0.21
+  archive_based                   1.40 ±  0.70    0.52 ±  0.03    1.35 ±  0.60    0.61 ±  0.12
+  multi_environment               1.35 ±  0.64    0.62 ±  0.31    1.03 ±  0.56    0.59 ±  0.11
+
+
+2. WITHIN-ARM CONVERGENCE (coefficient of variation = std/mean)
+   Low CV (<10%) = seeds converge to similar morphology
+   High CV (>20%) = morphology varies widely across seeds
+
+  Arm                             Torso Mass      Leg Mass    Motor Gear      Friction     Mean CV
+  ------------------------------------------------------------------------------------------------
+  fixed_gravity                       51.1%        66.2%        67.1%        21.0%      51.4%
+  random_variable_gravity             37.7%        67.5%        62.5%        29.4%      49.3%
+  gradual_transition                  70.0%        34.8%        46.2%        19.8%      42.7%
+  staged_evolution                    64.3%         6.4%        49.9%        41.5%      40.5%
+  adaptive_progression                47.9%        11.4%        61.6%        25.2%      36.5%
+  archive_based                       50.1%         6.4%        44.5%        20.3%      30.3%
+  multi_environment                   47.1%        50.7%        54.1%        19.4%      42.9%
+
+
+3. BETWEEN-ARM DIFFERENCES (Kruskal-Wallis H-test)
+   Tests whether different curriculum strategies evolve different morphologies
+
+  Torso Mass          : H=2.11, p=0.9090 n.s.
+  Leg Mass            : H=10.48, p=0.1058 n.s.
+  Motor Gear          : H=4.40, p=0.6232 n.s.
+  Friction            : H=15.90, p=0.0143 *
+
+
+4. MORPHOLOGY-PERFORMANCE CORRELATION (Spearman rank)
+   Pooled across all arms and seeds (n=70)
+
+  Torso Mass          : ρ=-0.492, p=0.0000 ***  (lower → better)
+  Leg Mass            : ρ=-0.335, p=0.0046 **  (lower → better)
+  Motor Gear          : ρ=+0.711, p=0.0000 ***  (higher → better)
+  Friction            : ρ=-0.130, p=0.2840 n.s.  (lower → better)
+
+
+==========================================================================================
+KEY OBSERVATIONS
+==========================================================================================
+
+  Most converged arm:  archive_based (mean CV = 30.3%)
+  Least converged arm: fixed_gravity (mean CV = 51.4%)
+
+  Overall evolved morphology (mean across all 70 runs):
+    Torso Mass          : 1.300x (↑ increased from 1.0x baseline)
+    Leg Mass            : 0.630x (↓ decreased from 1.0x baseline)
+    Motor Gear          : 1.038x (≈ neutral from 1.0x baseline)
+    Friction            : 0.658x (↓ decreased from 1.0x baseline)

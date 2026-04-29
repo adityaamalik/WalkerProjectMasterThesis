@@ -1,0 +1,197 @@
+==========================================================================================
+STATISTICAL SIGNIFICANCE REPORT
+Test: Mann-Whitney U (two-sided), FDR correction: Benjamini-Hochberg (α=0.05)
+Arms: 7, Seeds per arm: 10
+==========================================================================================
+
+──────────────────────────────────────────────────────────────────────────────────────────
+METRIC: Earth Probe Score
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Ranking (higher is better):
+    1. staged_evolution               1544.217
+    2. gradual_transition             1465.743
+    3. archive_based                  1452.099
+    4. multi_environment              1270.273
+    5. random_variable_gravity        1007.890
+    6. fixed_gravity                  947.144
+    7. adaptive_progression           928.620
+
+  Significant differences (0/21 pairs):
+    (none)
+
+  Non-significant differences (21 pairs):
+    fixed_gravity vs gradual_transition: p=0.4720 (n.s.)
+    fixed_gravity vs staged_evolution: p=0.4720 (n.s.)
+    random_variable_gravity vs gradual_transition: p=0.4720 (n.s.)
+    random_variable_gravity vs staged_evolution: p=0.4720 (n.s.)
+    gradual_transition vs adaptive_progression: p=0.4720 (n.s.)
+    staged_evolution vs adaptive_progression: p=0.4720 (n.s.)
+    adaptive_progression vs archive_based: p=0.5233 (n.s.)
+    random_variable_gravity vs archive_based: p=0.6099 (n.s.)
+    adaptive_progression vs multi_environment: p=0.6553 (n.s.)
+    random_variable_gravity vs multi_environment: p=0.6894 (n.s.)
+    fixed_gravity vs archive_based: p=0.7344 (n.s.)
+    gradual_transition vs multi_environment: p=0.8097 (n.s.)
+    staged_evolution vs multi_environment: p=0.8097 (n.s.)
+    fixed_gravity vs random_variable_gravity: p=0.8581 (n.s.)
+    fixed_gravity vs adaptive_progression: p=0.8581 (n.s.)
+    archive_based vs multi_environment: p=0.9634 (n.s.)
+    random_variable_gravity vs adaptive_progression: p=0.9782 (n.s.)
+    fixed_gravity vs multi_environment: p=1.0000 (n.s.)
+    gradual_transition vs staged_evolution: p=1.0000 (n.s.)
+    gradual_transition vs archive_based: p=1.0000 (n.s.)
+    staged_evolution vs archive_based: p=1.0000 (n.s.)
+
+──────────────────────────────────────────────────────────────────────────────────────────
+METRIC: Earth Net Progress (m)
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Ranking (higher is better):
+    1. staged_evolution               7.264
+    2. gradual_transition             6.990
+    3. archive_based                  6.864
+    4. multi_environment              6.484
+    5. fixed_gravity                  4.691
+    6. random_variable_gravity        4.389
+    7. adaptive_progression           3.957
+
+  Significant differences (0/21 pairs):
+    (none)
+
+  Non-significant differences (21 pairs):
+    fixed_gravity vs gradual_transition: p=0.4720 (n.s.)
+    fixed_gravity vs staged_evolution: p=0.4720 (n.s.)
+    random_variable_gravity vs gradual_transition: p=0.4720 (n.s.)
+    random_variable_gravity vs staged_evolution: p=0.4720 (n.s.)
+    gradual_transition vs adaptive_progression: p=0.4720 (n.s.)
+    staged_evolution vs adaptive_progression: p=0.4720 (n.s.)
+    adaptive_progression vs archive_based: p=0.4720 (n.s.)
+    random_variable_gravity vs archive_based: p=0.5576 (n.s.)
+    random_variable_gravity vs multi_environment: p=0.6894 (n.s.)
+    gradual_transition vs multi_environment: p=0.6894 (n.s.)
+    adaptive_progression vs multi_environment: p=0.6894 (n.s.)
+    fixed_gravity vs random_variable_gravity: p=0.8097 (n.s.)
+    fixed_gravity vs adaptive_progression: p=0.8097 (n.s.)
+    fixed_gravity vs archive_based: p=0.8097 (n.s.)
+    staged_evolution vs multi_environment: p=0.8097 (n.s.)
+    gradual_transition vs staged_evolution: p=0.9482 (n.s.)
+    fixed_gravity vs multi_environment: p=0.9782 (n.s.)
+    archive_based vs multi_environment: p=0.9782 (n.s.)
+    random_variable_gravity vs adaptive_progression: p=1.0000 (n.s.)
+    gradual_transition vs archive_based: p=1.0000 (n.s.)
+    staged_evolution vs archive_based: p=1.0000 (n.s.)
+
+──────────────────────────────────────────────────────────────────────────────────────────
+METRIC: Fall Rate
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Ranking (lower is better):
+    1. staged_evolution               0.350
+    2. gradual_transition             0.480
+    3. archive_based                  0.510
+    4. multi_environment              0.545
+    5. adaptive_progression           0.650
+    6. fixed_gravity                  0.685
+    7. random_variable_gravity        0.735
+
+  Significant differences (0/21 pairs):
+    (none)
+
+  Non-significant differences (21 pairs):
+    fixed_gravity vs staged_evolution: p=0.4720 (n.s.)
+    random_variable_gravity vs gradual_transition: p=0.4720 (n.s.)
+    random_variable_gravity vs staged_evolution: p=0.4720 (n.s.)
+    random_variable_gravity vs archive_based: p=0.4720 (n.s.)
+    staged_evolution vs adaptive_progression: p=0.4720 (n.s.)
+    fixed_gravity vs archive_based: p=0.6099 (n.s.)
+    random_variable_gravity vs multi_environment: p=0.6099 (n.s.)
+    fixed_gravity vs gradual_transition: p=0.6301 (n.s.)
+    gradual_transition vs adaptive_progression: p=0.6301 (n.s.)
+    staged_evolution vs multi_environment: p=0.6301 (n.s.)
+    staged_evolution vs archive_based: p=0.6797 (n.s.)
+    adaptive_progression vs archive_based: p=0.7344 (n.s.)
+    gradual_transition vs staged_evolution: p=0.7804 (n.s.)
+    fixed_gravity vs multi_environment: p=0.8299 (n.s.)
+    gradual_transition vs multi_environment: p=0.8581 (n.s.)
+    adaptive_progression vs multi_environment: p=0.8783 (n.s.)
+    random_variable_gravity vs adaptive_progression: p=0.9392 (n.s.)
+    gradual_transition vs archive_based: p=0.9634 (n.s.)
+    archive_based vs multi_environment: p=0.9634 (n.s.)
+    fixed_gravity vs adaptive_progression: p=0.9782 (n.s.)
+    fixed_gravity vs random_variable_gravity: p=1.0000 (n.s.)
+
+──────────────────────────────────────────────────────────────────────────────────────────
+METRIC: Robustness Mean Progress (m)
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Ranking (higher is better):
+    1. gradual_transition             6.514
+    2. staged_evolution               6.282
+    3. multi_environment              6.155
+    4. archive_based                  6.111
+    5. fixed_gravity                  4.018
+    6. random_variable_gravity        3.994
+    7. adaptive_progression           3.604
+
+  Significant differences (0/21 pairs):
+    (none)
+
+  Non-significant differences (21 pairs):
+    fixed_gravity vs gradual_transition: p=0.4720 (n.s.)
+    fixed_gravity vs staged_evolution: p=0.4720 (n.s.)
+    random_variable_gravity vs gradual_transition: p=0.4720 (n.s.)
+    random_variable_gravity vs staged_evolution: p=0.4720 (n.s.)
+    gradual_transition vs adaptive_progression: p=0.4720 (n.s.)
+    staged_evolution vs adaptive_progression: p=0.4720 (n.s.)
+    adaptive_progression vs archive_based: p=0.4720 (n.s.)
+    random_variable_gravity vs archive_based: p=0.5576 (n.s.)
+    random_variable_gravity vs multi_environment: p=0.6797 (n.s.)
+    adaptive_progression vs multi_environment: p=0.6797 (n.s.)
+    fixed_gravity vs archive_based: p=0.7804 (n.s.)
+    fixed_gravity vs random_variable_gravity: p=0.8097 (n.s.)
+    gradual_transition vs staged_evolution: p=0.8097 (n.s.)
+    fixed_gravity vs adaptive_progression: p=0.8561 (n.s.)
+    gradual_transition vs archive_based: p=0.8581 (n.s.)
+    gradual_transition vs multi_environment: p=0.8581 (n.s.)
+    staged_evolution vs multi_environment: p=0.9482 (n.s.)
+    fixed_gravity vs multi_environment: p=0.9634 (n.s.)
+    random_variable_gravity vs adaptive_progression: p=1.0000 (n.s.)
+    staged_evolution vs archive_based: p=1.0000 (n.s.)
+    archive_based vs multi_environment: p=1.0000 (n.s.)
+
+==========================================================================================
+KEY FINDINGS: Baseline comparisons
+==========================================================================================
+
+  Earth Probe Score:
+    fixed_gravity vs random_variable_gravity: p=0.8581 n.s., winner=random_variable_gravity
+    fixed_gravity vs gradual_transition: p=0.4720 n.s., winner=gradual_transition
+    fixed_gravity vs staged_evolution: p=0.4720 n.s., winner=staged_evolution
+    fixed_gravity vs adaptive_progression: p=0.8581 n.s., winner=fixed_gravity
+    fixed_gravity vs archive_based: p=0.7344 n.s., winner=archive_based
+    fixed_gravity vs multi_environment: p=1.0000 n.s., winner=multi_environment
+
+  Earth Net Progress (m):
+    fixed_gravity vs random_variable_gravity: p=0.8097 n.s., winner=fixed_gravity
+    fixed_gravity vs gradual_transition: p=0.4720 n.s., winner=gradual_transition
+    fixed_gravity vs staged_evolution: p=0.4720 n.s., winner=staged_evolution
+    fixed_gravity vs adaptive_progression: p=0.8097 n.s., winner=fixed_gravity
+    fixed_gravity vs archive_based: p=0.8097 n.s., winner=archive_based
+    fixed_gravity vs multi_environment: p=0.9782 n.s., winner=multi_environment
+
+  Fall Rate:
+    fixed_gravity vs random_variable_gravity: p=1.0000 n.s., winner=fixed_gravity
+    fixed_gravity vs gradual_transition: p=0.6301 n.s., winner=gradual_transition
+    fixed_gravity vs staged_evolution: p=0.4720 n.s., winner=staged_evolution
+    fixed_gravity vs adaptive_progression: p=0.9782 n.s., winner=adaptive_progression
+    fixed_gravity vs archive_based: p=0.6099 n.s., winner=archive_based
+    fixed_gravity vs multi_environment: p=0.8299 n.s., winner=multi_environment
+
+  Robustness Mean Progress (m):
+    fixed_gravity vs random_variable_gravity: p=0.8097 n.s., winner=fixed_gravity
+    fixed_gravity vs gradual_transition: p=0.4720 n.s., winner=gradual_transition
+    fixed_gravity vs staged_evolution: p=0.4720 n.s., winner=staged_evolution
+    fixed_gravity vs adaptive_progression: p=0.8561 n.s., winner=fixed_gravity
+    fixed_gravity vs archive_based: p=0.7804 n.s., winner=archive_based
+    fixed_gravity vs multi_environment: p=0.9634 n.s., winner=multi_environment

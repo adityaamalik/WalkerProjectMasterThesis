@@ -1,9 +1,8 @@
 {
-  "score": -50.85,
+  "score": -39.53,
   "generation": 0,
   "policy": "cpg",
+  "evolve_morphology": true,
   "label": "gen 0 snapshot",
-  "seed": 123,
-  "arm": "fixed_gravity",
-  "run_id": "smoke_fixed_123"
+  "seed": 99
 }

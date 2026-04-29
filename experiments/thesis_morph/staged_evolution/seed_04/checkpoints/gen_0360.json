@@ -1,0 +1,13 @@
+{
+  "score": 481.07,
+  "generation": 360,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "staged_evolution",
+  "gravity": -9.81,
+  "phase": "earth",
+  "label": "gen 360 snapshot",
+  "seed": 4,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_04"
+}

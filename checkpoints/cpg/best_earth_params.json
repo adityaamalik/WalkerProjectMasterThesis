@@ -1,0 +1,9 @@
+{
+  "score": 892.65,
+  "generation": 450,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 42
+}

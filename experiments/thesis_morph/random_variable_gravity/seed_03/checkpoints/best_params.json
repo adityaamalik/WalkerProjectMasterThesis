@@ -1,0 +1,13 @@
+{
+  "score": 586.31,
+  "generation": 436,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "random_uniform",
+  "gravity": -6.508,
+  "phase": "random",
+  "label": "all-time best",
+  "seed": 3,
+  "arm": "random_variable_gravity",
+  "run_id": "random_variable_gravity_seed_03"
+}

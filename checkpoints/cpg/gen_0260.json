@@ -1,6 +1,8 @@
 {
-  "score": 322.68,
+  "score": 778.32,
   "generation": 260,
   "policy": "cpg",
-  "label": "gen 260 snapshot"
+  "evolve_morphology": true,
+  "label": "gen 260 snapshot",
+  "seed": 42
 }

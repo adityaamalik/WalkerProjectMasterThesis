@@ -1,0 +1,13 @@
+{
+  "score": 1694.47,
+  "generation": 230,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "adaptive_progression",
+  "gravity": -5.0,
+  "phase": "lv2(-5.0)",
+  "label": "gen 230 snapshot",
+  "seed": 0,
+  "arm": "adaptive_progression",
+  "run_id": "adaptive_progression_seed_00"
+}

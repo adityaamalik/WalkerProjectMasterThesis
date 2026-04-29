@@ -1,0 +1,88 @@
+# ===================================================================
+# Project-specific exclusions
+# ===================================================================
+
+# Internal planning / dev notes — not for showcase
+DEVLOG.md
+PLAN.md
+
+# Claude Code local settings
+.claude/
+
+# Thesis writing — separate artifact, not part of code submission
+thesis_text/
+
+# Loose log files at project root
+*.log
+thesis_morph_run.log
+
+# Loose plot artifacts at project root
+fitness_curve_cpg.png
+fitness_curve_mlp.png
+
+# ===================================================================
+# Python
+# ===================================================================
+
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Coverage / testing
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ===================================================================
+# OS / editor
+# ===================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+.#*
+\#*\#

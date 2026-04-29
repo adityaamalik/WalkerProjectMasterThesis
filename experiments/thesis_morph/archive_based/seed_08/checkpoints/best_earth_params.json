@@ -1,0 +1,12 @@
+{
+  "score": 1795.23,
+  "generation": 470,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "archive_based",
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 8,
+  "arm": "archive_based",
+  "run_id": "archive_based_seed_08"
+}

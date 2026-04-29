@@ -1,0 +1,11 @@
+{
+  "score": 381.71,
+  "generation": 490,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "gravity": -9.81,
+  "label": "best earth probe",
+  "seed": 3,
+  "arm": "fixed_gravity",
+  "run_id": "fixed_gravity_seed_03"
+}

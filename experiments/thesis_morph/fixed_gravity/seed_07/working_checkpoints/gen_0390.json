@@ -1,0 +1,10 @@
+{
+  "score": 612.27,
+  "generation": 390,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "label": "gen 390 snapshot",
+  "seed": 7,
+  "arm": "fixed_gravity",
+  "run_id": "fixed_gravity_seed_07"
+}

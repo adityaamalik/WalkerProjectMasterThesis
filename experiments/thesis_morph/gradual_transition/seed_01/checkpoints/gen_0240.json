@@ -1,0 +1,13 @@
+{
+  "score": 1526.01,
+  "generation": 240,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "gradual_transition",
+  "gravity": -4.4735,
+  "phase": "ramp 35%",
+  "label": "gen 240 snapshot",
+  "seed": 1,
+  "arm": "gradual_transition",
+  "run_id": "gradual_transition_seed_01"
+}

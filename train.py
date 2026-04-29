@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from cpg_policy import CPGPolicy, N_JOINTS, N_PARAMS as CPG_N_PARAMS
-from evaluate import evaluate_policy, evaluate_parallel
+from evaluate import evaluate_policy, evaluate_parallel, N_MORPH_PARAMS
 
 
 # ---------------------------------------------------------------------------
@@ -109,6 +109,9 @@ def parse_args():
     p.add_argument("--corr-ramp-gen", type=int, default=None,
                    help="Generations to ramp correction scale to corr-max. "
                         "Default: scratch=200, warm-start=1")
+    p.add_argument("--evolve-morphology", action="store_true",
+                   help="Enable co-evolution of scalar morphological traits "
+                        "(mass, gear, friction). Expands search space by 4 params.")
     return p.parse_args()
 
 
@@ -143,7 +146,8 @@ def make_run_context(args) -> dict:
     return ctx
 
 
-def make_structured_scratch_init(seed: int = 42) -> np.ndarray:
+def make_structured_scratch_init(seed: int = 42,
+                                 evolve_morphology: bool = False) -> np.ndarray:
     """
     Build a scratch initial mean that is dynamically gentle.
 
@@ -152,6 +156,9 @@ def make_structured_scratch_init(seed: int = 42) -> np.ndarray:
     oscillator speed on all joints, which tends to cause immediate falls.
     A low-amplitude/low-frequency prior keeps early exploration near
     stabilisable motions while still being from scratch (no checkpoint).
+
+    If *evolve_morphology* is True, appends N_MORPH_PARAMS zeros (morphological
+    logits at neutral → multiplier = 1.0 via 2^tanh(0) mapping).
     """
     rng = np.random.default_rng(seed)
     x0 = np.zeros(CPG_N_PARAMS, dtype=np.float64)
@@ -172,6 +179,10 @@ def make_structured_scratch_init(seed: int = 42) -> np.ndarray:
     # Small exploration noise, smaller on MLP than on CPG core.
     x0[cpg_amp_start:cpg_phi_end] += rng.normal(0.0, 0.12, cpg_phi_end - cpg_amp_start)
     x0[cpg_phi_end:] += rng.normal(0.0, 0.02, CPG_N_PARAMS - cpg_phi_end)
+
+    if evolve_morphology:
+        # Morph logits initialised to 0.0 (neutral → multiplier = 1.0)
+        x0 = np.concatenate([x0, np.zeros(N_MORPH_PARAMS, dtype=np.float64)])
     return x0
 
 
@@ -374,8 +385,9 @@ def main():
     args = parse_args()
     run_context = make_run_context(args)
 
-    n_params = CPG_N_PARAMS
-    print(f"Walker2d-v5 | policy=CPG  params={n_params}")
+    n_params = CPG_N_PARAMS + N_MORPH_PARAMS if args.evolve_morphology else CPG_N_PARAMS
+    print(f"Walker2d-v5 | policy=CPG  params={n_params}"
+          + (" (morph ON)" if args.evolve_morphology else ""))
     print(CPGPolicy().describe())
     print(
         "Run context | "
@@ -420,9 +432,19 @@ def main():
     warm_start = bool(args.checkpoint and os.path.exists(args.checkpoint))
     if warm_start:
         x0 = np.load(args.checkpoint)
-        print(f"Resuming from {args.checkpoint}")
+        if x0.shape[0] != n_params:
+            print(
+                f"WARNING: checkpoint has {x0.shape[0]} params, "
+                f"expected {n_params}. Starting fresh."
+            )
+            x0 = make_structured_scratch_init(seed=args.seed,
+                                              evolve_morphology=args.evolve_morphology)
+            warm_start = False
+        else:
+            print(f"Resuming from {args.checkpoint}")
     else:
-        x0 = make_structured_scratch_init(seed=args.seed)
+        x0 = make_structured_scratch_init(seed=args.seed,
+                                          evolve_morphology=args.evolve_morphology)
         print("Starting from structured scratch prior (no warm-start checkpoint).")
 
     schedule = resolve_schedule_args(args, warm_start=warm_start)
@@ -523,6 +545,7 @@ def main():
                         "score": round(best_score, 2),
                         "generation": gen,
                         "policy": "cpg",
+                        "evolve_morphology": args.evolve_morphology,
                         "label": "all-time best",
                         **run_context,
                     },
@@ -536,6 +559,7 @@ def main():
                         "score": round(best_gen, 2),
                         "generation": gen,
                         "policy": "cpg",
+                        "evolve_morphology": args.evolve_morphology,
                         "label": f"gen {gen} snapshot",
                         **run_context,
                     },
@@ -575,6 +599,7 @@ def main():
                             "score": round(float(probe_score), 2),
                             "generation": gen,
                             "policy": "cpg",
+                            "evolve_morphology": args.evolve_morphology,
                             "gravity": round(float(args.probe_gravity), 4),
                             "label": "best earth probe",
                             **run_context,
@@ -608,6 +633,7 @@ def main():
             "score": round(best_score, 2),
             "generation": gen - 1,
             "policy": "cpg",
+            "evolve_morphology": args.evolve_morphology,
             "label": "final (all-time best)",
             **run_context,
         },
@@ -728,6 +754,7 @@ def main():
             "run": run_context,
             "env_id": ENV_ID,
             "policy": "cpg",
+            "evolve_morphology": args.evolve_morphology,
             "population": int(args.pop),
             "sigma0": float(args.sigma),
             "generations": int(args.generations),

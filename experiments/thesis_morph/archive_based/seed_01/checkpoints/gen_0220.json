@@ -1,0 +1,13 @@
+{
+  "score": 1550.0,
+  "generation": 220,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "archive_based",
+  "gravity": -5.0,
+  "phase": "lv2(a=5)",
+  "label": "gen 220 snapshot",
+  "seed": 1,
+  "arm": "archive_based",
+  "run_id": "archive_based_seed_01"
+}

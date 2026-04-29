@@ -1,0 +1,31 @@
+{
+  "id": "seed_07",
+  "name": "Curriculum \u2014 StagedEvolution  -1.6 (33%) \u2192 -5.0 (33%) \u2192 -9.81 (33%)",
+  "curriculum": "staged_evolution",
+  "policy": "cpg",
+  "n_params": 504,
+  "generations": 500,
+  "population": 40,
+  "sigma0": 0.5,
+  "n_episodes": 3,
+  "max_steps": 1000,
+  "gravity_schedule": "StagedEvolution  -1.6 (33%) \u2192 -5.0 (33%) \u2192 -9.81 (33%)",
+  "run": {
+    "seed": 7,
+    "arm": "staged_evolution",
+    "run_id": "staged_evolution_seed_07"
+  },
+  "result": {
+    "best_score": 2249.21,
+    "best_generation": 499,
+    "outcome": "complete"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy",
+    "training_log": "training_log.csv",
+    "earth_probe": "earth_probe.csv",
+    "gravity_sweep": "gravity_sweep.csv",
+    "summary": "summary.json"
+  }
+}

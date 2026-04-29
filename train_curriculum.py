@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from cpg_policy import CPGPolicy, N_JOINTS, N_PARAMS as CPG_N_PARAMS
-from evaluate import evaluate_policy, evaluate_parallel
+from evaluate import evaluate_policy, evaluate_parallel, N_MORPH_PARAMS
 from curriculum import get_strategy, list_strategies
 
 
@@ -137,6 +137,9 @@ def parse_args():
     p.add_argument("--corr-ramp-gen", type=int, default=None,
                    help="Generations to ramp correction scale to corr-max. "
                         "Default: scratch=200, warm-start=1")
+    p.add_argument("--evolve-morphology", action="store_true",
+                   help="Enable co-evolution of scalar morphological traits "
+                        "(mass, gear, friction). Expands search space by 4 params.")
 
     return p.parse_args()
 
@@ -145,13 +148,17 @@ def parse_args():
 # Helpers
 # ---------------------------------------------------------------------------
 
-def make_structured_scratch_init(seed: int = 42) -> np.ndarray:
+def make_structured_scratch_init(seed: int = 42,
+                                 evolve_morphology: bool = False) -> np.ndarray:
     """
     Build a scratch initial mean that is dynamically gentle.
 
-    Identical to the function in train.py so that all three arms start from
+    Identical to the function in train.py so that all arms start from
     the same CPG prior: low amplitude (sigmoid(-1.9) ≈ 0.13), moderate
     frequency (softplus(-0.2)), near-zero MLP weights.
+
+    If *evolve_morphology* is True, appends N_MORPH_PARAMS zeros (morphological
+    logits at neutral → multiplier = 1.0 via 2^tanh(0) mapping).
     """
     rng = np.random.default_rng(seed)
     x0 = np.zeros(CPG_N_PARAMS, dtype=np.float64)
@@ -167,6 +174,9 @@ def make_structured_scratch_init(seed: int = 42) -> np.ndarray:
 
     x0[cpg_amp_start:cpg_phi_end] += rng.normal(0.0, 0.12, cpg_phi_end - cpg_amp_start)
     x0[cpg_phi_end:] += rng.normal(0.0, 0.02, CPG_N_PARAMS - cpg_phi_end)
+
+    if evolve_morphology:
+        x0 = np.concatenate([x0, np.zeros(N_MORPH_PARAMS, dtype=np.float64)])
     return x0
 
 
@@ -424,8 +434,9 @@ def main():
     ckpt_dir = checkpoint_dir(args.curriculum, args.exp)
     os.makedirs(ckpt_dir, exist_ok=True)
 
-    n_params = CPG_N_PARAMS
-    print(f"Walker2d-v5 | policy=CPG  params={n_params}")
+    n_params = CPG_N_PARAMS + N_MORPH_PARAMS if args.evolve_morphology else CPG_N_PARAMS
+    print(f"Walker2d-v5 | policy=CPG  params={n_params}"
+          + (" (morph ON)" if args.evolve_morphology else ""))
     print(f"Curriculum   : {strategy.describe()}")
     print(
         "Run context | "
@@ -473,12 +484,14 @@ def main():
                 f"WARNING: checkpoint has {x0.shape[0]} params, "
                 f"expected {n_params}. Starting fresh."
             )
-            x0 = make_structured_scratch_init(seed=args.seed)
+            x0 = make_structured_scratch_init(seed=args.seed,
+                                              evolve_morphology=args.evolve_morphology)
             warm_start = False
         else:
             print(f"Warm-starting from {args.checkpoint}")
     else:
-        x0 = make_structured_scratch_init(seed=args.seed)
+        x0 = make_structured_scratch_init(seed=args.seed,
+                                          evolve_morphology=args.evolve_morphology)
 
     schedule = resolve_schedule_args(args, warm_start=warm_start)
     print(
@@ -620,6 +633,7 @@ def main():
                         "score": round(best_score, 2),
                         "generation": gen,
                         "policy": "cpg",
+                        "evolve_morphology": args.evolve_morphology,
                         "curriculum": args.curriculum,
                         "gravity": round(float(g), 4),
                         "phase": phase,
@@ -636,6 +650,7 @@ def main():
                         "score": round(best_gen, 2),
                         "generation": gen,
                         "policy": "cpg",
+                        "evolve_morphology": args.evolve_morphology,
                         "curriculum": args.curriculum,
                         "gravity": round(float(g), 4),
                         "phase": phase,
@@ -678,6 +693,7 @@ def main():
                             "score": round(float(probe_score), 2),
                             "generation": gen,
                             "policy": "cpg",
+                            "evolve_morphology": args.evolve_morphology,
                             "curriculum": args.curriculum,
                             "gravity": round(float(args.probe_gravity), 4),
                             "label": "best earth probe",
@@ -746,6 +762,7 @@ def main():
             "score": round(best_score, 2),
             "generation": gen - 1,
             "policy": "cpg",
+            "evolve_morphology": args.evolve_morphology,
             "curriculum": args.curriculum,
             "label": "final (all-time best)",
             **run_context,
@@ -858,6 +875,7 @@ def main():
     summary = {
         "run": run_context,
         "curriculum": args.curriculum,
+        "evolve_morphology": args.evolve_morphology,
         "gravity_schedule": strategy.describe(),
         "population": int(args.pop),
         "sigma0": float(args.sigma),

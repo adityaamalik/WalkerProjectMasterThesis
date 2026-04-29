@@ -1,0 +1,15 @@
+{
+  "id": "smoke_morph",
+  "policy": "cpg",
+  "result": {
+    "best_score": 73.28,
+    "best_generation": 9
+  },
+  "run": {
+    "seed": 42
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

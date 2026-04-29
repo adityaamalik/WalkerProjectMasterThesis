@@ -1,0 +1,11 @@
+{
+  "score": 1795.4,
+  "generation": 499,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "archive_based",
+  "label": "final (all-time best)",
+  "seed": 6,
+  "arm": "archive_based",
+  "run_id": "archive_based_seed_06"
+}

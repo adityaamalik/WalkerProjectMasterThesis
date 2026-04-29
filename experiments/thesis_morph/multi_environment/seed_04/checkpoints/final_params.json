@@ -1,0 +1,11 @@
+{
+  "score": 1898.91,
+  "generation": 499,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "multi_environment",
+  "label": "final (all-time best)",
+  "seed": 4,
+  "arm": "multi_environment",
+  "run_id": "multi_environment_seed_04"
+}

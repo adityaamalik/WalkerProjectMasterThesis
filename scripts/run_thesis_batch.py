@@ -82,6 +82,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--gravity-end", type=float, default=-9.81,
                    help="End gravity for the gradual_transition arm (default: Earth -9.81).")
 
+    p.add_argument("--evolve-morphology", action="store_true",
+                   help="Enable co-evolution of scalar morphological traits "
+                        "(mass, gear, friction). Passed through to train.py / train_curriculum.py.")
     p.add_argument("--exp-root", type=str, default="thesis",
                    help="Subdirectory under experiments/ for all outputs (default: thesis).")
     p.add_argument("--python", type=str, default=sys.executable,
@@ -114,6 +117,8 @@ def build_command(args: argparse.Namespace, arm: str, seed: int) -> tuple[list[s
         "--final-eval-episodes", str(args.final_eval_episodes),
         f"--gravity-sweep={args.gravity_sweep}",
     ]
+    if args.evolve_morphology:
+        common.append("--evolve-morphology")
 
     if arm == "fixed_gravity":
         cmd = [args.python, "train.py", "--checkpoint-dir", ckpt_work_rel, *common]
@@ -282,6 +287,7 @@ def main() -> int:
             "generations": args.generations,
             "pop": args.pop,
             "sigma": args.sigma,
+            "evolve_morphology": args.evolve_morphology,
             "probe_every": args.probe_every,
             "probe_episodes": args.probe_episodes,
             "probe_gravity": args.probe_gravity,

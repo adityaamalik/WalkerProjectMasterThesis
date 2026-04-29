@@ -1,0 +1,13 @@
+{
+  "score": 267.02,
+  "generation": 380,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "multi_environment",
+  "gravity": -9.81,
+  "phase": "multi(3)",
+  "label": "gen 380 snapshot",
+  "seed": 7,
+  "arm": "multi_environment",
+  "run_id": "multi_environment_seed_07"
+}

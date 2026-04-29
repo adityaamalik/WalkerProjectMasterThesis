@@ -1,0 +1,13 @@
+{
+  "score": 1146.8,
+  "generation": 90,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "staged_evolution",
+  "gravity": -1.6,
+  "phase": "moon",
+  "label": "gen 90 snapshot",
+  "seed": 5,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_05"
+}

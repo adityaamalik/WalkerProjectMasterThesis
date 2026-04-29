@@ -1,0 +1,15 @@
+{
+  "id": "pilot_morph_50",
+  "policy": "cpg",
+  "result": {
+    "best_score": 166.48,
+    "best_generation": 49
+  },
+  "run": {
+    "seed": 42
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

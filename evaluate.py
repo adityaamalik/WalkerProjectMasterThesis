@@ -9,7 +9,7 @@ import numpy as np
 import gymnasium as gym
 import mujoco
 
-from cpg_policy import CPGPolicy
+from cpg_policy import CPGPolicy, N_PARAMS as CPG_N_PARAMS
 
 # ---------------------------------------------------------------------------
 # Fitness design (thesis mode: gravity-agnostic locomotion objective)
@@ -105,23 +105,58 @@ def _patch_hud(viewer, meta: dict, state: dict) -> None:
         # Append our TOPRIGHT text in the same call
         tr = mujoco.mjtGridPos.mjGRID_TOPRIGHT
         ep        = state.get("ep", 0)
+        n_eps     = state.get("n_episodes", 1)
         fitness   = state.get("fitness", 0.0)
         x_pos     = state.get("x_pos", 0.0)
         velocity  = state.get("velocity", 0.0)
-        score     = meta.get("score", "?")
-        score_str = f"{score:.1f}" if isinstance(score, (int, float)) else str(score)
-
         gravity   = state.get("gravity", -9.81)
         phase     = state.get("phase", "")
 
-        self.add_overlay(tr, f"Ep {ep + 1}  Fitness", f"{fitness:.1f}")
-        self.add_overlay(tr, "Distance",               f"{x_pos:.2f} m")
-        self.add_overlay(tr, "Velocity",               f"{velocity:.2f} m/s")
-        self.add_overlay(tr, "Gravity",                f"{gravity:.2f} m/s²  {phase}")
-        self.add_overlay(tr, "Policy",                 meta.get("policy", "?").upper())
-        self.add_overlay(tr, "Checkpoint",             meta.get("label", "?"))
-        self.add_overlay(tr, "Train score",            score_str)
-        self.add_overlay(tr, "Gen",                    str(meta.get("generation", "?")))
+        # Real-time gait metrics from tracker
+        steps         = state.get("steps", 0)
+        strides       = state.get("strides", 0)
+        fell          = state.get("fell", False)
+        fwd_dist      = state.get("forward_distance", 0.0)
+        bwd_dist      = state.get("backward_distance", 0.0)
+        net_progress  = fwd_dist - bwd_dist
+        flight_rate   = state.get("flight_rate", 0.0)
+
+        # Morphology
+        morph         = state.get("morph", None)
+
+        # --- Simulation section ---
+        self.add_overlay(tr, "", "--- SIMULATION ---")
+        self.add_overlay(tr, f"Episode",   f"{ep + 1} / {n_eps}")
+        grav_str = f"{gravity:.2f} m/s\u00b2"
+        if phase:
+            grav_str += f"  ({phase})"
+        self.add_overlay(tr, "Gravity",    grav_str)
+
+        # --- Locomotion section ---
+        self.add_overlay(tr, "", "--- LOCOMOTION ---")
+        self.add_overlay(tr, "Position",   f"{x_pos:.2f} m")
+        self.add_overlay(tr, "Net progress", f"{net_progress:.2f} m")
+        self.add_overlay(tr, "Speed",      f"{velocity:.2f} m/s  (target {TARGET_SPEED:.1f})")
+
+        # --- Gait section ---
+        self.add_overlay(tr, "", "--- GAIT QUALITY ---")
+        self.add_overlay(tr, "Steps alive", str(steps))
+        self.add_overlay(tr, "Strides",    str(int(strides)))
+        self.add_overlay(tr, "Airborne",   f"{flight_rate:.0%}")
+        status = "FALLEN" if fell else "WALKING" if velocity > 0.1 else "STANDING"
+        self.add_overlay(tr, "Status",     status)
+
+        # --- Fitness section ---
+        self.add_overlay(tr, "", "--- FITNESS ---")
+        self.add_overlay(tr, "Live score", f"{fitness:.1f}")
+
+        # --- Morphology section (only when evolved) ---
+        if morph is not None:
+            self.add_overlay(tr, "", "--- MORPHOLOGY ---")
+            self.add_overlay(tr, "Torso mass",  f"{morph.get('torso_mass_mult', 1.0):.2f}x")
+            self.add_overlay(tr, "Leg mass",    f"{morph.get('leg_mass_mult', 1.0):.2f}x")
+            self.add_overlay(tr, "Motor gear",  f"{morph.get('motor_gear_mult', 1.0):.2f}x")
+            self.add_overlay(tr, "Foot grip",   f"{morph.get('friction_mult', 1.0):.2f}x")
 
     import types
     viewer._create_overlay = types.MethodType(patched_create_overlay, viewer)
@@ -129,7 +164,8 @@ def _patch_hud(viewer, meta: dict, state: dict) -> None:
 
 def _update_hud_state(state: dict, ep: int, fitness: float,
                       x_pos: float, velocity: float,
-                      gravity: float = -9.81, phase: str = "") -> None:
+                      gravity: float = -9.81, phase: str = "",
+                      tracker: "FitnessTracker | None" = None) -> None:
     """Update the shared state dict that the patched overlay reads."""
     state["ep"]       = ep
     state["fitness"]  = fitness
@@ -137,6 +173,14 @@ def _update_hud_state(state: dict, ep: int, fitness: float,
     state["velocity"] = velocity
     state["gravity"]  = gravity
     state["phase"]    = phase
+    if tracker is not None:
+        samples = max(1, tracker._contact_samples)
+        state["steps"]            = tracker.time_alive
+        state["strides"]          = tracker.alternation_bonus
+        state["fell"]             = tracker.fell
+        state["forward_distance"] = tracker.cumulative_distance
+        state["backward_distance"] = tracker.backward_distance
+        state["flight_rate"]      = tracker._flight_steps / samples
 
 
 # ---------------------------------------------------------------------------
@@ -472,47 +516,231 @@ def make_policy(params: np.ndarray, correction_scale: float = 0.5) -> CPGPolicy:
 
 
 # ---------------------------------------------------------------------------
-# Gravity XML helper
+# Morphological decoder
 # ---------------------------------------------------------------------------
 
-def _make_gravity_env_xml(gravity: float) -> str:
-    """
-    Write a Walker2d XML file with a custom gravity value to a temp file.
-    Returns the path of the temp file (caller must delete it).
+# Number of morphological parameters evolved alongside the neural controller.
+N_MORPH_PARAMS = 4
+# Names in the order they appear in the raw parameter vector.
+MORPH_PARAM_NAMES = (
+    "torso_mass_mult",
+    "leg_mass_mult",
+    "motor_gear_mult",
+    "friction_mult",
+)
 
-    Strategy: find the stock walker2d_v5.xml bundled with Gymnasium and
-    patch the <option> line to replace the default gravity.
+
+def decode_morphology(raw_morph_params: np.ndarray) -> dict:
+    """Map 4 unbounded CMA-ES logits to safe physical multiplier ranges.
+
+    Uses ``2 ** tanh(x)`` so that:
+      - x = 0  → multiplier = 1.0  (neutral / default body)
+      - x → +∞ → multiplier → 2.0
+      - x → -∞ → multiplier → 0.5
+
+    This ensures the scratch init (all zeros) produces the stock Walker2D
+    body, so any performance difference is attributable to evolved morphology.
+
+    Parameters
+    ----------
+    raw_morph_params : np.ndarray
+        Array of shape (4,) with unbounded floats from the CMA-ES vector.
+
+    Returns
+    -------
+    dict with keys: torso_mass_mult, leg_mass_mult, motor_gear_mult,
+    friction_mult — each a float in (0.5, 2.0).
     """
-    import tempfile, re
-    import gymnasium.envs.mujoco as _mj_envs
+    raw = np.asarray(raw_morph_params, dtype=np.float64).ravel()
+    assert len(raw) == N_MORPH_PARAMS, (
+        f"Expected {N_MORPH_PARAMS} morph params, got {len(raw)}"
+    )
+    scaled = np.power(2.0, np.tanh(raw))    # (0.5, 2.0), neutral at 1.0
+    return dict(zip(MORPH_PARAM_NAMES, scaled.tolist()))
+
+
+# ---------------------------------------------------------------------------
+# Viewer window helpers (fullscreen + close detection)
+# ---------------------------------------------------------------------------
+
+def _maximize_viewer_window(viewer) -> None:
+    """Resize the GLFW viewer window to cover the full primary monitor."""
+    try:
+        import glfw
+    except ImportError:
+        return
+    win = getattr(viewer, "window", None)
+    if win is None:
+        return
+    try:
+        monitor = glfw.get_primary_monitor()
+        mode = glfw.get_video_mode(monitor)
+        width, height = mode.size.width, mode.size.height
+        glfw.set_window_pos(win, 0, 0)
+        glfw.set_window_size(win, width, height)
+    except Exception:
+        # Fallback: just maximize, keep decorations
+        try:
+            glfw.maximize_window(win)
+        except Exception:
+            pass
+
+
+def _position_viewer_window(viewer, x: int, y: int, width: int, height: int) -> None:
+    """Place the GLFW viewer window at (x, y) with the given size."""
+    try:
+        import glfw
+    except ImportError:
+        return
+    win = getattr(viewer, "window", None)
+    if win is None:
+        return
+    try:
+        glfw.set_window_pos(win, int(x), int(y))
+        glfw.set_window_size(win, int(width), int(height))
+    except Exception:
+        pass
+
+
+def _set_viewer_window_title(viewer, title: str) -> None:
+    """Set the GLFW viewer window title."""
+    try:
+        import glfw
+    except ImportError:
+        return
+    win = getattr(viewer, "window", None)
+    if win is None:
+        return
+    try:
+        glfw.set_window_title(win, title)
+    except Exception:
+        pass
+
+
+def _hide_viewer_menu(viewer) -> None:
+    """Suppress MuJoCo's default on-screen overlay (render-frame info, etc.).
+
+    The Gymnasium MuJoCo viewer draws an info overlay via ``_create_overlay()``
+    every frame and exposes a ``_hide_menu`` flag toggled by the 'H' key. We
+    set that flag and additionally replace ``_create_overlay`` with a no-op so
+    no overlay text is drawn at all.
+    """
+    try:
+        viewer._hide_menu = True
+    except Exception:
+        pass
+    try:
+        import types
+        viewer._create_overlay = types.MethodType(lambda self: None, viewer)
+    except Exception:
+        pass
+
+
+def _viewer_should_close(viewer) -> bool:
+    """Return True if the user has closed the GLFW viewer window."""
+    try:
+        import glfw
+        win = getattr(viewer, "window", None)
+        if win is None:
+            return False
+        return bool(glfw.window_should_close(win))
+    except Exception:
+        return False
+
+
+# ---------------------------------------------------------------------------
+# Custom environment XML builder (gravity + optional morphology)
+# ---------------------------------------------------------------------------
+
+# Default density in the stock Walker2d-v5 XML (<default> section).
+_DEFAULT_DENSITY = 1000
+
+# Geom names grouped by morphological role.
+_TORSO_GEOMS = {"torso_geom"}
+_LEG_GEOMS = {
+    "thigh_geom", "leg_geom", "foot_geom",
+    "thigh_left_geom", "leg_left_geom", "foot_left_geom",
+}
+_FOOT_GEOMS = {"foot_geom", "foot_left_geom"}
+
+
+def _make_custom_env_xml(
+    gravity: float,
+    morph_params: dict | None = None,
+) -> str:
+    """Write a Walker2d XML with custom gravity and optional morphology.
+
+    Uses ``xml.etree.ElementTree`` for robust, structured XML editing
+    instead of fragile regex substitution.
+
+    Parameters
+    ----------
+    gravity : float
+        Gravitational acceleration (negative = downward, e.g. -9.81).
+    morph_params : dict or None
+        If provided, a dict with keys ``torso_mass_mult``,
+        ``leg_mass_mult``, ``motor_gear_mult``, ``friction_mult``
+        (each a float, typically in [0.5, 2.0]).
+
+    Returns
+    -------
+    str — path to a temporary XML file.  Caller must ``os.unlink()`` it.
+    """
     import os
+    import tempfile
+    import xml.etree.ElementTree as ET
+    import gymnasium.envs.mujoco as _mj_envs
 
-    # Locate the bundled XML
+    # ---- Locate and parse the stock XML --------------------------------
     assets_dir = os.path.join(os.path.dirname(_mj_envs.__file__), "assets")
     stock_path = os.path.join(assets_dir, "walker2d_v5.xml")
-    with open(stock_path) as f:
-        xml = f.read()
+    tree = ET.parse(stock_path)
+    root = tree.getroot()
 
-    # Replace gravity in the <option ...> tag
-    xml = re.sub(
-        r'(<option\b[^>]*\bgravity\s*=\s*")[^"]*(")',
-        lambda m: f'{m.group(1)}0 0 {gravity:.6f}{m.group(2)}',
-        xml,
-    )
-    # If gravity attr not present in option tag, inject it
-    if f"{gravity:.6f}" not in xml:
-        xml = re.sub(
-            r'(<option\b)',
-            f'<option gravity="0 0 {gravity:.6f}" ',
-            xml,
-            count=1,
-        )
+    # ---- Gravity -------------------------------------------------------
+    option = root.find("option")
+    if option is None:
+        option = ET.SubElement(root, "option")
+    option.set("gravity", f"0 0 {gravity:.6f}")
 
+    # ---- Morphological modifications -----------------------------------
+    if morph_params is not None:
+        torso_m = morph_params.get("torso_mass_mult", 1.0)
+        leg_m = morph_params.get("leg_mass_mult", 1.0)
+        gear_m = morph_params.get("motor_gear_mult", 1.0)
+        fric_m = morph_params.get("friction_mult", 1.0)
+
+        # -- Mass scaling (via density, since inertiafromgeom="true") ----
+        for geom in root.iter("geom"):
+            name = geom.get("name", "")
+            if name in _TORSO_GEOMS:
+                base = float(geom.get("density", _DEFAULT_DENSITY))
+                geom.set("density", f"{base * torso_m:.6f}")
+            elif name in _LEG_GEOMS:
+                base = float(geom.get("density", _DEFAULT_DENSITY))
+                geom.set("density", f"{base * leg_m:.6f}")
+
+        # -- Motor gear scaling ------------------------------------------
+        for motor in root.iter("motor"):
+            base_gear = float(motor.get("gear", "100"))
+            motor.set("gear", f"{base_gear * gear_m:.4f}")
+
+        # -- Foot friction scaling ---------------------------------------
+        for geom in root.iter("geom"):
+            name = geom.get("name", "")
+            if name in _FOOT_GEOMS:
+                fric_str = geom.get("friction", "")
+                if fric_str:
+                    parts = fric_str.split()
+                    # Scale the sliding (first) component; keep others
+                    parts[0] = f"{float(parts[0]) * fric_m:.6f}"
+                    geom.set("friction", " ".join(parts))
+
+    # ---- Write to temp file and return path ----------------------------
     tmp = tempfile.NamedTemporaryFile(
-        mode="w", suffix=".xml", delete=False, prefix="walker2d_grav_"
+        mode="wb", suffix=".xml", delete=False, prefix="walker2d_custom_"
     )
-    tmp.write(xml)
-    tmp.flush()
+    tree.write(tmp, xml_declaration=True, encoding="utf-8")
     tmp.close()
     return tmp.name
 
@@ -533,6 +761,10 @@ def evaluate_policy(
     return_diagnostics: bool = False,
     penalty_scale: float = 1.0,
     correction_scale: float = 0.5,
+    fullscreen: bool = False,
+    window_rect: tuple[int, int, int, int] | None = None,
+    window_title: str | None = None,
+    show_hud: bool = True,
 ) -> float | tuple[float, dict]:
     """
     Run n_episodes rollouts and return the mean fitness across episodes.
@@ -550,31 +782,54 @@ def evaluate_policy(
     """
     import os, tempfile
 
+    # ---- Slice params: 504 = neural only, 508 = neural + 4 morph --------
+    n = len(params)
+    if n == CPG_N_PARAMS:
+        cpg_params = params
+        morph_dict = None
+    elif n == CPG_N_PARAMS + N_MORPH_PARAMS:
+        cpg_params = params[:CPG_N_PARAMS]
+        raw_morph = params[CPG_N_PARAMS:]
+        morph_dict = decode_morphology(raw_morph)
+    else:
+        raise ValueError(
+            f"params length {n} is neither {CPG_N_PARAMS} (neural) "
+            f"nor {CPG_N_PARAMS + N_MORPH_PARAMS} (neural+morph)"
+        )
+
     render_mode = "human" if render else None
 
-    # Build env — if gravity is non-default, inject it via a temp XML
-    if abs(gravity - (-9.81)) < 1e-6:
+    # Build env — custom XML needed when gravity is non-default or morphology is set
+    need_custom_xml = abs(gravity - (-9.81)) > 1e-6 or morph_dict is not None
+    if not need_custom_xml:
         env = gym.make("Walker2d-v5", render_mode=render_mode)
         _tmp_xml_path = None
     else:
-        # Write a minimal gravity-override XML by patching the standard model
-        _tmp_xml_path = _make_gravity_env_xml(gravity)
+        _tmp_xml_path = _make_custom_env_xml(gravity, morph_dict)
         env = gym.make("Walker2d-v5", render_mode=render_mode,
                        xml_file=_tmp_xml_path)
 
-    policy = make_policy(params, correction_scale=correction_scale)
+    policy = make_policy(cpg_params, correction_scale=correction_scale)
     hud_meta = meta or {"policy": "cpg", "label": "live",
                         "score": "?", "generation": "?"}
 
     # Shared mutable state dict read by the patched overlay every frame
-    hud_state = {"ep": 0, "fitness": 0.0, "x_pos": 0.0,
-                 "velocity": 0.0, "gravity": gravity, "phase": phase}
+    hud_state = {"ep": 0, "n_episodes": n_episodes, "fitness": 0.0,
+                 "x_pos": 0.0, "velocity": 0.0, "gravity": gravity,
+                 "phase": phase, "morph": morph_dict,
+                 "steps": 0, "strides": 0, "fell": False,
+                 "forward_distance": 0.0, "backward_distance": 0.0,
+                 "flight_rate": 0.0}
     hud_patched = False
 
     total_fitness = 0.0
     diagnostics = []
+    user_closed = False
 
     for ep in range(n_episodes):
+        if user_closed:
+            break
+
         obs, _ = env.reset(seed=seed + ep)
 
         policy.reset()
@@ -587,23 +842,42 @@ def evaluate_policy(
             tracker.update(obs, action, info, env, terminated, truncated)
 
             if render:
-                env.render()
+                try:
+                    env.render()
+                except Exception:
+                    user_closed = True
+                    break
                 # Patch once — after first render so viewer object exists
                 if not hud_patched:
                     try:
                         viewer = env.unwrapped.mujoco_renderer.viewer
-                        _patch_hud(viewer, hud_meta, hud_state)
+                        if show_hud:
+                            _patch_hud(viewer, hud_meta, hud_state)
+                        else:
+                            _hide_viewer_menu(viewer)
                         _setup_tracking_camera(env)
+                        if window_rect is not None:
+                            _position_viewer_window(viewer, *window_rect)
+                        elif fullscreen:
+                            _maximize_viewer_window(viewer)
+                        if window_title is not None:
+                            _set_viewer_window_title(viewer, window_title)
                         hud_patched = True
                     except AttributeError:
                         pass
+                # Detect window close (X button) — exit gracefully
+                if hud_patched and _viewer_should_close(viewer):
+                    user_closed = True
+                    break
                 # Update state dict — patch reads this on next frame
-                _update_hud_state(hud_state, ep,
-                                  tracker.compute(),
-                                  tracker.current_x,
-                                  tracker.current_velocity,
-                                  gravity=gravity,
-                                  phase=phase)
+                if show_hud:
+                    _update_hud_state(hud_state, ep,
+                                      tracker.compute(),
+                                      tracker.current_x,
+                                      tracker.current_velocity,
+                                      gravity=gravity,
+                                      phase=phase,
+                                      tracker=tracker)
 
             if terminated or truncated:
                 break
