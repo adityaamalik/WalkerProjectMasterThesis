@@ -20,6 +20,15 @@ thesis_morph_run.log
 fitness_curve_cpg.png
 fitness_curve_mlp.png
 
+# Intermediate per-generation parameter snapshots
+# (kept locally for resume/debug, but excluded from the public repo —
+# the GUI only needs best_*.npy, final_*.npy, and the CSV/JSON summaries)
+experiments/**/checkpoints/gen_*.npy
+experiments/**/checkpoints/gen_*.json
+experiments/**/working_checkpoints/
+checkpoints/**/gen_*.npy
+checkpoints/**/gen_*.json
+
 # ===================================================================
 # Python
 # ===================================================================

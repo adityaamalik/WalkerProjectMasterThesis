@@ -1,9 +1,0 @@
-{
-  "score": 711.13,
-  "generation": 150,
-  "policy": "cpg",
-  "label": "gen 150 snapshot",
-  "seed": 0,
-  "arm": "fixed_gravity",
-  "run_id": "fixed_gravity_seed_00"
-}

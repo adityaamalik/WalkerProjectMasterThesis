@@ -1,9 +1,0 @@
-{
-  "score": -193.43,
-  "generation": 90,
-  "policy": "cpg",
-  "curriculum": "gradual_transition",
-  "gravity": -2.0,
-  "phase": "warmup",
-  "label": "gen 90 snapshot"
-}

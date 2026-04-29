@@ -1,9 +1,0 @@
-{
-  "score": -182.03,
-  "generation": 290,
-  "policy": "cpg",
-  "curriculum": "gradual_transition",
-  "gravity": -5.7097,
-  "phase": "ramp 47%",
-  "label": "gen 290 snapshot"
-}
