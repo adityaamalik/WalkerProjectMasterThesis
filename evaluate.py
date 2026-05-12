@@ -5,6 +5,7 @@ Custom fitness function replaces Gymnasium's built-in reward with a
 multi-objective signal designed to produce robust forward locomotion.
 """
 
+import os
 import numpy as np
 import gymnasium as gym
 import mujoco
@@ -17,7 +18,17 @@ from cpg_policy import CPGPolicy, N_PARAMS as CPG_N_PARAMS
 W_DISTANCE          =  55.0    # forward-only distance reward
 W_NET_PROGRESS      =  95.0    # reward for net forward displacement
 W_SPEED_TRACK       =   0.4    # reward for staying near target speed
-W_UPRIGHT           =   0.20   # torso stays upright
+
+# Upright weight is env-overridable. Default 0.20 reproduces the original
+# thesis behavior; setting FITNESS_UPRIGHT_WEIGHT changes it for the run
+# (e.g. =0.05 for the modified-fitness thesis_morph_run_2 experiment).
+W_UPRIGHT           = float(os.environ.get("FITNESS_UPRIGHT_WEIGHT", 0.20))
+
+# Knee flexion bonus rewards bent knees. Default 0.0 disables the term,
+# preserving original-thesis fitness exactly. Set FITNESS_KNEE_FLEXION_WEIGHT
+# to a small positive number to encourage knee-bending gaits.
+W_KNEE_FLEXION      = float(os.environ.get("FITNESS_KNEE_FLEXION_WEIGHT", 0.0))
+
 W_TIME_ALIVE        =   0.01   # mild survival reward
 
 # Gait-style shaping terms are disabled for thesis runs to preserve generality
@@ -210,6 +221,7 @@ class FitnessTracker:
         self.backward_distance   = 0.0   # backward-only distance
         self.speed_track_bonus   = 0.0   # closeness to target speed
         self.upright_bonus       = 0.0
+        self.knee_flexion_bonus  = 0.0   # accumulated |knee angle| (rad), summed over both knees
         self.pitch_rate_penalty  = 0.0
         self.vertical_velocity_penalty = 0.0
         self.flight_penalty      = 0.0
@@ -260,6 +272,16 @@ class FitnessTracker:
 
         # Upright bonus: 1.0 when perfectly upright, 0.0 when at ±90°
         self.upright_bonus += max(0.0, 1.0 - abs(pitch) / (np.pi / 2))
+
+        # Knee flexion bonus: rewards bending the knees. obs[3] = right knee
+        # angle, obs[6] = left knee angle (both in radians, both in range
+        # [-2.618, 0] where 0 = straight, -2.618 = fully bent at -150°).
+        # Per-step contribution is the normalized mean knee bend in [0, 1].
+        # The term is zero-weighted by default, so this is a no-op unless
+        # FITNESS_KNEE_FLEXION_WEIGHT is set in the environment.
+        max_knee_rad = 2.618  # 150° in radians
+        knee_bend_norm = (abs(float(obs[3])) + abs(float(obs[6]))) / (2.0 * max_knee_rad)
+        self.knee_flexion_bonus += min(1.0, knee_bend_norm)
 
         # Dense walking-speed tracking term: peaks near TARGET_SPEED, decays away.
         speed_err = (v - TARGET_SPEED) / SPEED_TOLERANCE
@@ -426,6 +448,7 @@ class FitnessTracker:
             "net_progress_reward": net_progress * W_NET_PROGRESS,
             "speed_track_reward": self.speed_track_bonus * W_SPEED_TRACK,
             "upright_reward": self.upright_bonus * W_UPRIGHT,
+            "knee_flexion_reward": self.knee_flexion_bonus * W_KNEE_FLEXION,
             "alternation_reward": self.alternation_bonus * W_ALTERNATION,
             "overtake_reward": self.overtake_bonus * W_OVERTAKE,
             "front_timer_reward": self.front_timer_reward_steps * W_FRONT_TIMER_REWARD,
