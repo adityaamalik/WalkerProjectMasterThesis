@@ -1,0 +1,59 @@
+{
+  "run": {
+    "seed": 18,
+    "arm": "staged_evolution",
+    "run_id": "staged_evolution_seed_18"
+  },
+  "curriculum": "staged_evolution",
+  "evolve_morphology": true,
+  "gravity_schedule": "StagedEvolution  -1.6 (33%) \u2192 -5.0 (33%) \u2192 -9.81 (33%)",
+  "population": 40,
+  "sigma0": 0.5,
+  "generations": 500,
+  "schedule": {
+    "penalty_min": 0.2,
+    "penalty_ramp_gen": 200,
+    "corr_min": 0.0,
+    "corr_max": 0.5,
+    "corr_ramp_gen": 200
+  },
+  "best_score": 647.7899898894029,
+  "best_earth_probe_score": 561.8555198678293,
+  "best_generation": 499,
+  "tte_generation": 510,
+  "tte_censored": true,
+  "tte_thresholds": {
+    "net_progress_m_min": 4.0,
+    "fell_max": 0.2,
+    "backward_distance_m_max": 1.0
+  },
+  "earth_probe": {
+    "every_generations": 10,
+    "episodes": 10,
+    "gravity": -9.81,
+    "records": 50
+  },
+  "seed_stability_target_n": 10,
+  "final_earth": {
+    "score": 569.5375536649373,
+    "net_progress_m": 2.1600590308494745,
+    "fell": 0.55,
+    "backward_distance_m": 0.036479101607930706,
+    "mean_forward_speed_mps": 0.28780256609635024
+  },
+  "robustness": {
+    "mean_net_progress_m": 1.8924928905719365,
+    "worst_net_progress_m": 1.2042878503736967,
+    "mean_fall_rate": 0.7700000000000001
+  },
+  "gravity_sweep": {
+    "gravities": [
+      -6.0,
+      -7.5,
+      -9.81,
+      -11.0,
+      -12.0
+    ],
+    "episodes": 20
+  }
+}

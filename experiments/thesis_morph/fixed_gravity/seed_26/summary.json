@@ -1,0 +1,52 @@
+{
+  "run": {
+    "seed": 26,
+    "arm": "fixed_gravity",
+    "run_id": "fixed_gravity_seed_26"
+  },
+  "env_id": "Walker2d-v5",
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "population": 40,
+  "sigma0": 0.5,
+  "generations": 500,
+  "best_score": 315.80274756811986,
+  "best_earth_probe_score": 286.4474297142252,
+  "best_generation": 499,
+  "tte_generation": 510,
+  "tte_censored": true,
+  "tte_thresholds": {
+    "net_progress_m_min": 4.0,
+    "fell_max": 0.2,
+    "backward_distance_m_max": 1.0
+  },
+  "earth_probe": {
+    "every_generations": 10,
+    "episodes": 10,
+    "gravity": -9.81,
+    "records": 50
+  },
+  "seed_stability_target_n": 10,
+  "final_earth": {
+    "score": 278.3439201665152,
+    "net_progress_m": 0.9223746891375504,
+    "fell": 0.85,
+    "backward_distance_m": 0.10182974517252993,
+    "mean_forward_speed_mps": 0.13378268474781344
+  },
+  "robustness": {
+    "mean_net_progress_m": 0.7252106492293754,
+    "worst_net_progress_m": 0.48449335982967234,
+    "mean_fall_rate": 0.52
+  },
+  "gravity_sweep": {
+    "gravities": [
+      -6.0,
+      -7.5,
+      -9.81,
+      -11.0,
+      -12.0
+    ],
+    "episodes": 20
+  }
+}

@@ -36,7 +36,6 @@ from matplotlib.figure import Figure
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 RESULTS_DIR = PROJECT_ROOT / "experiments" / "thesis_morph"
-N_SEEDS = 10
 
 # Strategy display order (best → worst by mean final score, from thesis results)
 STRATEGY_ORDER = [
@@ -101,11 +100,18 @@ def load_csv(strategy: str, seed: int, filename: str) -> list[dict]:
 
 
 def load_all_summaries() -> dict[str, dict[int, dict]]:
-    """Load every available summary.json, indexed by [strategy][seed]."""
+    """Load every available summary.json by scanning seed_NN/ subdirectories."""
     out: dict[str, dict[int, dict]] = {}
     for strategy in STRATEGY_ORDER:
         out[strategy] = {}
-        for seed in range(N_SEEDS):
+        strategy_dir = RESULTS_DIR / strategy
+        if not strategy_dir.is_dir():
+            continue
+        for seed_dir in sorted(strategy_dir.glob("seed_*")):
+            try:
+                seed = int(seed_dir.name.split("_")[1])
+            except (IndexError, ValueError):
+                continue
             summary = load_summary(strategy, seed)
             if summary is not None:
                 out[strategy][seed] = summary
@@ -351,15 +357,21 @@ class ViewerApp:
         )
         self.btn_run_all.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0, 6))
 
+        self.btn_timelapse = ttk.Button(
+            btns, text="🕐  Time-lapse evolution (gen 0 → 490)",
+            style="Accent.TButton", command=self._action_timelapse,
+        )
+        self.btn_timelapse.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+
         ttk.Button(btns, text="📈  Learning curve",
                    command=self._action_learning_curve).grid(
-            row=2, column=0, sticky="ew", padx=(0, 4), pady=2)
+            row=3, column=0, sticky="ew", padx=(0, 4), pady=2)
         ttk.Button(btns, text="🌍  Gravity robustness",
                    command=self._action_gravity_sweep).grid(
-            row=2, column=1, sticky="ew", padx=(4, 0), pady=2)
+            row=3, column=1, sticky="ew", padx=(4, 0), pady=2)
         ttk.Button(btns, text="📊  Compare all strategies",
                    command=self._action_compare).grid(
-            row=3, column=0, columnspan=2, sticky="ew", pady=2)
+            row=4, column=0, columnspan=2, sticky="ew", pady=2)
 
         # ===== Status bar =====
         self.status_var = tk.StringVar(value="Ready.")
@@ -388,23 +400,23 @@ class ViewerApp:
         best = best_seed_for(seeds)
 
         self.seed_listbox.delete(0, "end")
-        for seed in range(N_SEEDS):
+        seed_indices = sorted(seeds.keys())
+        best_position = None
+        for idx, seed in enumerate(seed_indices):
             summary = seeds.get(seed)
-            if summary is None:
-                line = f"  seed {seed:02d}  —  (missing)"
-            else:
-                score = summary.get("final_earth", {}).get("score", 0)
-                marker = "⭐" if seed == best else "  "
-                line = f"{marker} seed {seed:02d}  —  score {score:>7.1f}"
+            score = summary.get("final_earth", {}).get("score", 0)
+            marker = "⭐" if seed == best else "  "
+            line = f"{marker} seed {seed:02d}  —  score {score:>7.1f}"
             self.seed_listbox.insert("end", line)
             if seed == best:
-                self.seed_listbox.itemconfig(seed, foreground=COLOR_BEST)
+                self.seed_listbox.itemconfig(idx, foreground=COLOR_BEST)
+                best_position = idx
 
         # Default-select the best seed
-        if best is not None:
+        if best is not None and best_position is not None:
             self.seed_listbox.selection_clear(0, "end")
-            self.seed_listbox.selection_set(best)
-            self.seed_listbox.see(best)
+            self.seed_listbox.selection_set(best_position)
+            self.seed_listbox.see(best_position)
             self.var_seed.set(best)
 
     def _refresh_stats(self):
@@ -565,6 +577,60 @@ class ViewerApp:
         self._update_render_buttons()
         self._poll_render_procs()
 
+    def _action_timelapse(self):
+        """Replay the selected run's evolution across key generations in one window."""
+        if self._any_process_running():
+            messagebox.showinfo(
+                "Already running",
+                "A simulation is already running. Stop it first before launching the time-lapse."
+            )
+            return
+
+        strategy = self.var_strategy.get()
+        seed = self.var_seed.get()
+        run_dir = RESULTS_DIR / strategy / f"seed_{seed:02d}"
+
+        # Verify at least one snapshot exists somewhere under run_dir
+        candidate_dirs = [run_dir / "checkpoints", run_dir / "working_checkpoints"]
+        gen_files_found = []
+        for d in candidate_dirs:
+            if d.exists():
+                gen_files_found.extend(list(d.glob("gen_*.npy")))
+        if not gen_files_found:
+            messagebox.showerror(
+                "No snapshots found",
+                f"No per-generation snapshots (gen_*.npy) found in:\n"
+                f"  {run_dir / 'checkpoints'}\n"
+                f"  {run_dir / 'working_checkpoints'}\n\n"
+                "The time-lapse requires snapshots saved during training."
+            )
+            return
+
+        gravity = float(self.var_gravity.get())
+        cmd = [
+            sys.executable, str(PROJECT_ROOT / "render_timelapse.py"),
+            "--run-dir", str(run_dir),
+            "--strategy-name", STRATEGY_DISPLAY[strategy],
+            "--gravity", str(gravity),
+            "--fullscreen",
+            "--window-title",
+            f"Time-lapse: {STRATEGY_DISPLAY[strategy]} (seed {seed:02d})",
+        ]
+        self.status_var.set(
+            f"Launching time-lapse for {STRATEGY_DISPLAY[strategy]} seed {seed:02d} "
+            f"(gen 0 → 490 at g={gravity:.2f})..."
+        )
+        try:
+            proc = subprocess.Popen(cmd, cwd=str(PROJECT_ROOT))
+        except OSError as e:
+            messagebox.showerror("Failed to launch time-lapse", str(e))
+            self.status_var.set("Ready.")
+            return
+
+        self.render_procs.append(proc)
+        self._update_render_buttons()
+        self._poll_render_procs()
+
     def _action_stop(self):
         running = [p for p in self.render_procs if p.poll() is None]
         if not running:
@@ -606,6 +672,7 @@ class ViewerApp:
         state_when_running = "disabled" if running else "normal"
         self.btn_render.configure(state=state_when_running)
         self.btn_run_all.configure(state=state_when_running)
+        self.btn_timelapse.configure(state=state_when_running)
         self.btn_stop.configure(state=("normal" if running else "disabled"))
 
     def _on_close(self):

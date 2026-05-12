@@ -23,9 +23,18 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 def load_arm_metrics(exp_root, arm, n_seeds=10):
-    """Load per-seed metrics for one arm."""
+    """Load per-seed metrics for one arm.
+
+    All four metrics are taken from the 20-episode final-evaluation block
+    (``final_earth`` and ``robustness`` in summary.json) so that the score
+    metric is consistent with the other primary metrics. Earlier versions
+    of this script used ``best_earth_probe_score`` (the highest periodic
+    Earth-probe score during training) for the score metric, which is a
+    different quantity from the final-evaluation score reported in
+    Table 4.1 of the thesis.
+    """
     metrics = {
-        "best_earth_probe_score": [],
+        "final_earth_score": [],
         "net_progress_m": [],
         "fell": [],
         "robustness_mean": [],
@@ -35,8 +44,8 @@ def load_arm_metrics(exp_root, arm, n_seeds=10):
         if not os.path.exists(path):
             continue
         s = json.load(open(path))
-        metrics["best_earth_probe_score"].append(s.get("best_earth_probe_score", 0) or 0)
         fe = s.get("final_earth", {})
+        metrics["final_earth_score"].append(fe.get("score", 0))
         metrics["net_progress_m"].append(fe.get("net_progress_m", 0))
         metrics["fell"].append(fe.get("fell", 1.0))
         rob = s.get("robustness", {})
@@ -79,16 +88,16 @@ def main():
     args = p.parse_args()
 
     arms = [a.strip() for a in args.arms.split(",")]
-    metric_names = ["best_earth_probe_score", "net_progress_m", "fell", "robustness_mean"]
+    metric_names = ["final_earth_score", "net_progress_m", "fell", "robustness_mean"]
     metric_labels = {
-        "best_earth_probe_score": "Earth Probe Score",
+        "final_earth_score": "Final Earth Score",
         "net_progress_m": "Earth Net Progress (m)",
         "fell": "Fall Rate",
         "robustness_mean": "Robustness Mean Progress (m)",
     }
     # For fall rate, lower is better
     higher_is_better = {
-        "best_earth_probe_score": True,
+        "final_earth_score": True,
         "net_progress_m": True,
         "fell": False,
         "robustness_mean": True,

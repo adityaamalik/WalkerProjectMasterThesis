@@ -1,0 +1,13 @@
+{
+  "score": 1986.06,
+  "generation": 387,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "staged_evolution",
+  "gravity": -9.81,
+  "phase": "earth",
+  "label": "all-time best",
+  "seed": 26,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_26"
+}

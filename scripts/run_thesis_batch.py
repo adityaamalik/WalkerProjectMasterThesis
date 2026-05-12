@@ -30,7 +30,10 @@ ARMS_DEFAULT = [
 
 # Legacy arm kept for backward compatibility with the original 30-run dataset.
 _LEGACY_ARMS = {"curriculum_variable_gravity"}
-_ALL_KNOWN_ARMS = set(ARMS_DEFAULT) | _LEGACY_ARMS
+# Extended arm: gradual_transition trained at a longer generation budget.
+# Curriculum auto-scales with max_generations so no curriculum code change needed.
+_EXTENDED_ARMS = {"gradual_transition_extended"}
+_ALL_KNOWN_ARMS = set(ARMS_DEFAULT) | _LEGACY_ARMS | _EXTENDED_ARMS
 
 
 def parse_seed_spec(seed_spec: str | None, num_seeds: int) -> list[int]:
@@ -142,6 +145,18 @@ def build_command(args: argparse.Namespace, arm: str, seed: int) -> tuple[list[s
 
     # New arm: gradual_transition starting at Moon gravity (-1.6)
     elif arm == "gradual_transition":
+        cmd = [
+            args.python, "train_curriculum.py",
+            "--curriculum", "gradual_transition",
+            "--gravity-start", str(args.gravity_start),
+            "--gravity-end", str(args.gravity_end),
+            *common,
+        ]
+
+    # Extended arm: gradual_transition trained for a longer generation budget.
+    # Identical gravity ramp; only --generations on the CLI changes the schedule
+    # (the curriculum's warmup_frac=0.20 auto-scales with max_generations).
+    elif arm == "gradual_transition_extended":
         cmd = [
             args.python, "train_curriculum.py",
             "--curriculum", "gradual_transition",

@@ -60,7 +60,7 @@ A GUI is provided to browse trained agents without using the terminal:
 python viewer_app.py
 ```
 
-The viewer lets you select any of the 7 strategies and 10 seeds, highlights the best-performing seed for each strategy, displays per-run statistics, and provides one-click access to: render the agent in MuJoCo, plot the learning curve, plot the gravity robustness profile, and compare all strategies side-by-side. Built with Tkinter — no extra dependencies beyond what is already in `requirements.txt`.
+The viewer lets you select any of the 7 strategies and 10 seeds, highlights the best-performing seed for each strategy, displays per-run statistics, and provides one-click access to: render the agent in MuJoCo, plot the learning curve, plot the gravity robustness profile, compare all strategies side-by-side, and run a **time-lapse evolution** that replays the walker at generations 0, 50, 100, 200, 350, and 490 in a single window — visualizing how the controller learned to walk. Built with Tkinter — no extra dependencies beyond what is already in `requirements.txt`.
 
 ### Reproduce the full thesis experiment (7 arms × 10 seeds = 70 runs)
 

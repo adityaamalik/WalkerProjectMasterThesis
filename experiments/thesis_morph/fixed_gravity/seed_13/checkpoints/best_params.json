@@ -1,0 +1,10 @@
+{
+  "score": 721.9,
+  "generation": 319,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "label": "all-time best",
+  "seed": 13,
+  "arm": "fixed_gravity",
+  "run_id": "fixed_gravity_seed_13"
+}

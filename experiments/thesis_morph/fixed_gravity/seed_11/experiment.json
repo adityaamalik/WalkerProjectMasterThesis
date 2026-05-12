@@ -1,0 +1,17 @@
+{
+  "id": "thesis_morph/fixed_gravity/seed_11",
+  "policy": "cpg",
+  "result": {
+    "best_score": 2455.67,
+    "best_generation": 499
+  },
+  "run": {
+    "seed": 11,
+    "arm": "fixed_gravity",
+    "run_id": "fixed_gravity_seed_11"
+  },
+  "artifacts": {
+    "fitness_curve": "fitness_curve.png",
+    "best_params": "checkpoints/best_params.npy"
+  }
+}

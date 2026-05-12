@@ -1,0 +1,11 @@
+{
+  "score": 2399.29,
+  "generation": 499,
+  "policy": "cpg",
+  "evolve_morphology": true,
+  "curriculum": "staged_evolution",
+  "label": "final (all-time best)",
+  "seed": 19,
+  "arm": "staged_evolution",
+  "run_id": "staged_evolution_seed_19"
+}
